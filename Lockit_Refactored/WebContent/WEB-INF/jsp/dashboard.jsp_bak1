@@ -1,0 +1,846 @@
+<%@page import="com.verudix.lockit.service.DashboardServiceImpl"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.Vector"%>
+<%@page import="com.verudix.lockit.util.LockitConstants"%>
+<%@page import="java.io.File"%>
+<%@page import="com.verudix.lockit.flexpaperviewer.Config"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" session="true"
+    pageEncoding="ISO-8859-1"%>
+    
+<%
+	System.out.println("The session is --"+session.getValue("user_mail"));
+	String[] strArrName = (String[])session.getAttribute("strArrName");
+	String[] strArrPath = (String[])session.getAttribute("strArrPath");
+	String[] strArrFileId = (String[])session.getAttribute("strArrFileId");
+	String[] strArrIsExpiry = (String[])session.getAttribute("strArrIsExpiry");
+	int[] intCounter = (int[])session.getAttribute("intCounter");	
+	String fileShareid,isfolder,createdby,str_file_id,str_file_name,str_file_path,str_is_folder,str_is_secure,str_delete_file,str_is_expiry;
+ 	String fileid = (String) request.getAttribute("Clickfileid1");
+ 	String shareUpdate = (String) request.getAttribute("shareUpdate");	
+ 	String strFolderName=(String) request.getAttribute("strFolderName");
+ 	String strFileId=(String) request.getAttribute("strFileId");
+ 	String strIsExpiry=(String) request.getAttribute("strIsExpiry");
+ 	String msg = (String)request.getAttribute("message") ;
+	String errmsg = (String)request.getAttribute("error_message") ;
+	String logged_user = (String)session.getAttribute("user_name");
+	String logged_user_mail = (String)session.getAttribute("user_mail");
+	String rootpath = getServletContext().getRealPath("/")+"Userfiles"+File.separator+logged_user_mail+File.separator+ "My Files"+"/";
+	DashboardServiceImpl dashboardServiceImpl=(DashboardServiceImpl)config.getServletContext().getAttribute("dashboardServiceImpl");
+	String dropdown = (String) request.getAttribute("dropdown");
+	dropdown = dropdown==null? "" : dropdown;
+	String strf2path = (String) request.getAttribute("f2path");
+	String strCntInc = (String) request.getAttribute("strCntInc");
+	int add;
+	strCntInc = strCntInc==null? "0" : strCntInc;
+	strf2path = strf2path==null? "" : strf2path;	
+	int intCount=0;  	
+	if(!strf2path.equals("")){
+		 add = Integer.parseInt(strCntInc);	
+		 intCount= intCount + add +1;
+		 strArrName[intCount] = strFolderName;
+		 strArrPath[intCount] = strf2path;
+		 strArrFileId[intCount] = strFileId;
+		 strArrIsExpiry[intCount] = strIsExpiry;
+		 intCounter[intCount] = intCount;
+	}else{
+		 strArrName[intCount] = "";
+		 strArrPath[intCount] = "";
+		 strArrFileId[intCount] = "";
+		 strArrIsExpiry[intCount] = "";
+		 intCounter[intCount] = intCount;
+	}
+	
+	if(dropdown.length() == 0 || dropdown == ""){
+		dropdown = "All";		
+	}
+	ArrayList<HashMap<String, Object>> mydata =(ArrayList<HashMap<String, Object>>)request.getAttribute("mydata");
+	String Photourl = (String)request.getAttribute("Photourl");
+	
+%>     
+    
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Lockit - Dashboard</title>
+
+        <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+            
+        <!-- Bootstrap framework -->
+            <link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
+        <!-- main styles -->
+            <link rel="stylesheet" href="css/main.css" />
+            <link rel="stylesheet" href="css/lockit.css" />
+        <!-- elusive webicons -->
+            <link rel="stylesheet" href="css/elusive/css/elusive-webfont.css"/>
+        <!-- custom fonts -->
+        <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,300&amp;subset=latin,latin-ext' rel='stylesheet'/>
+        <!-- custom assets -->
+        <link href="assets/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css"/>
+        <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' />
+  		<link href="css/styles.css" rel="stylesheet" type="text/css" />
+        <script  src="Scripts/prototype-1.js"  type="text/javascript"></script>
+		<script src="Scripts/prototype-base-extensions.js"  type="text/javascript"></script>
+		<script  src="Scripts/prototype-date-extensions.js"  type="text/javascript"></script>
+		<script src="Scripts/behaviour.js"  type="text/javascript"></script>
+		<script src="Scripts/datepicker.js"  type="text/javascript"></script>
+        <script  src="Scripts/behaviors.js"  type="text/javascript"></script>		
+		<link rel="stylesheet" href="Scripts/datepicker.css"/>		
+		<script src="js/jquery.min.js" type="text/javascript"></script>
+		
+		<script type="text/javascript">
+ 
+  $(document).ready(function(){
+  // Write on keyup event of keyword input element
+  $("#kwd_search").keyup(function(){
+   // When value of the input is not blank
+   if( $(this).val() != "")
+   {
+    // Show only matching TR, hide rest of them
+    $("#my-table tbody>tr").hide();
+    $("#my-table td:contains-ci('" + $(this).val() + "')").parent("tr").show();
+    
+    
+   }
+   else
+   {
+    // When there is no input or clean again, show everything back
+    $("#my-table tbody>tr").show();
+   }
+  });
+ });
+ // jQuery expression for case-insensitive filter
+ $.extend($.expr[":"], 
+ {
+     "contains-ci": function(elem, i, match, array) 
+  {
+   return (elem.textContent || elem.innerText || $(elem).text() || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+  }
+ });
+  
+ </script>
+		 
+ 		<style type="text/css">
+			.modalBackground
+			{
+			background-color: #fff;
+			filter: alpha(opacity=80);
+			opacity: 0.8;
+			z-index: 10000;
+			}
+			.RadioClass
+			{
+			width:600px;
+			}
+		</style>
+		
+		
+<!--      ADDED FOR MODAL POP-UP           -->
+
+    <style type="text/css">
+        .web_dialog_overlay
+        {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            background: #000000;
+            opacity: .15;
+            filter: alpha(opacity=15);
+            -moz-opacity: .15;
+            z-index: 101;
+            display: none;
+        }
+        .web_dialog_overlay1
+        {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            background: #000000;
+            opacity: .15;
+            filter: alpha(opacity=15);
+            -moz-opacity: .15;
+            z-index: 101;
+            display: none;
+        }
+        .web_dialog
+        {
+            display: none;
+            position: fixed;
+          /* width: 680px; */
+            height: 320px;
+            top: 50%;
+            left: 50%;
+        	 margin-left: -190px;
+            margin-top: -100px;
+            background-color: #ffffff;
+        /*    border: 2px solid #336699;*/
+            padding: 0px;
+   			border: 1px solid #257dab;
+            z-index: 102;
+            font-family: Verdana;
+            font-size: 10pt;
+            
+        }
+        .web_dialog1
+        {
+            display: none;
+            position: fixed;
+        	  width: 400px; 
+         /*   height: 320px;*/
+            top: 50%;
+            left: 50%;
+        	 margin-left: -190px;
+            margin-top: -100px;
+            background-color: #ffffff;
+        /*    border: 2px solid #336699;*/
+            padding: 0px;
+   			border: 1px solid #257dab;
+            z-index: 102;
+            font-family: Verdana;
+            font-size: 10pt;
+            
+        }
+           .web_dialog3
+        {
+            
+            position: fixed;
+        	  width: 760px; 
+        height: 420px;
+            top: 50%;
+            left: 50%;
+        	 margin-left: -190px;
+            margin-top: -100px;
+            background-color: #ffffff;
+        /*    border: 2px solid #336699;*/
+            padding: 0px;
+   			border: 1px solid #257dab;
+            z-index: 102;
+            font-family: Verdana;
+            font-size: 10pt;
+            overflow-y:scroll;display:none;
+            
+        }
+        .web_dialog_title
+        {
+            border-bottom: solid 2px #336699;
+            background-color: #336699;
+            padding: 4px;
+            color: White;
+            font-weight:bold;
+        }
+        .web_dialog_title a
+        {
+            color: White;
+            text-decoration: none;
+        }
+        .align_right
+        {
+            text-align: right;
+        }
+       
+    </style>
+ 
+ 	<script type="text/javascript">
+        $(document).ready(function ()
+        {           
+            $("#btnShowModal_FileUpload").click(function (e)
+            {
+                ShowDialog(true);
+                e.preventDefault();
+            });            
+        $("#btnShowModal_FolderUpload").click(function (e)
+                    {
+                        ShowDialog1(true);
+                        e.preventDefault();
+                    });
+
+      	$("#btnUploadFile").click(function (e)
+            {
+      			      			
+				 var f=document.form1;
+				 f.f1fileid.value="<%=strFileId%>";
+				 f.f1filename.value="<%=strFolderName%>";
+				 f.f1isexpiry.value="<%=strIsExpiry%>";
+				 f.f1cntinc.value="<%=strCntInc%>";
+				
+	        	 f.method="post";	        	
+	        	 f.action='uploadfile.do';
+	        	 f.submit();				
+				 HideDialog();
+                 e.preventDefault();			
+            });
+            
+        $("#btnCancelFile").click(function (e)
+            {        		        				
+        		HideDialog();
+                e.preventDefault();
+        			
+            });
+            
+        $("#btnUploadFolder").click(function (e)
+             {
+        		var f=document.form1;
+        		f.f1fileid.value="<%=strFileId%>";
+				f.f1filename.value="<%=strFolderName%>";
+				f.f1isexpiry.value="<%=strIsExpiry%>";
+				f.f1cntinc.value="<%=strCntInc%>";
+        	    f.method="post";
+        	    f.action='createFolder.do';
+        	    f.submit();				
+        		HideDialog();
+                e.preventDefault();			
+             });
+                    
+        $("#btnCancelFolder").click(function (e)
+              {        		        				
+                HideDialog1();
+                e.preventDefault();
+                			
+             });
+        $("#btnDelFileFolder").click(function (e)
+                {          		
+        	 	var f=document.form2;
+            	f.file_id.value=str_file_id;
+    		    f.file_name.value=str_file_name;
+    		    f.file_path.value=str_file_path;
+    		    f.is_folder.value=str_is_folder;
+    		    f.is_secure.value=str_is_secure;
+    		    f.functionality.value=str_delete_file;
+    		   
+        	    f.method="post";        	    
+        	    f.action="deleteFile.do";
+        	    f.submit(); 
+        	    HideDialog3();
+                e.preventDefault();
+                });
+        $("#btnCancelDelFileFolder").click(function (e)
+                {
+                     HideDialog3();
+                     e.preventDefault();
+                });      
+                  
+       }); 
+        function ShowDialog(modal)
+        {
+            $("#overlay").show();
+            $("#dialog").fadeIn(300);
+
+            if (modal)
+            {
+                $("#overlay").unbind("click");
+            }
+            else
+            {
+                $("#overlay").click(function (e)
+                {
+                    HideDialog();
+                });
+            }
+        }
+        function ShowDialog1(modal)
+        {
+            $("#overlay1").show();
+            $("#dialog1").fadeIn(300);
+
+            if (modal)
+            {
+                $("#overlay1").unbind("click");
+            }
+            else
+            {
+                $("#overlay1").click(function (e)
+                {
+                    HideDialog();
+                });
+            }
+        }
+        function ShowDialog3(modal)
+        {
+            $("#overlay3").show();
+            $("#dialog3").fadeIn(300);
+
+            if (modal)
+            {
+                $("#overlay3").unbind("click");
+            }
+            else
+            {
+                $("#overlay3").click(function (e)
+                {
+                    HideDialog3();
+                });
+            }
+        }
+        function HideDialog3()
+        {
+            $("#overlay3").hide();
+            $("#dialog3").fadeOut(300);
+        } 
+        function HideDialog()
+        {
+            $("#overlay").hide();
+            $("#dialog").fadeOut(300);
+        }
+        function HideDialog1()
+        {
+            $("#overlay1").hide();
+            $("#dialog1").fadeOut(300);
+        }   
+        function get_selection(input) {
+        	var f=document.form2;
+    		document.getElementById("selection").value = input;      		
+    		f.method="post";
+    	    f.action='dashboard.do';
+    	    f.submit();
+    	}
+        function open_file_folder(id,name,path,isfolder,issecure,openfile,ownerid,isexpiry){ 
+        		
+        			var f=document.form2;
+        			f.method="post";
+        		    f.file_id.value=id;
+        		    f.file_name.value=name;
+        		    f.file_path.value=path;
+        		    f.is_folder.value=isfolder;
+        		    f.is_secure.value=issecure;
+        		    f.functionality.value=openfile;
+        		    f.owner_id.value=ownerid;
+        		    f.is_expiry.value=isexpiry;
+        		    if(isfolder==0){
+        		    	f.action="openFile.do";
+        		    }else{
+        		    	var f2path = document.getElementById("f2path");
+        		    	var f1path = document.getElementById("f1path");
+        		    	document.getElementById("cntInc").value = "<%=intCount%>";        		   		
+        		    	f1path.value = path+name+'/';
+        		    	f2path.value = path+name+'/';
+        		       	f.action="openFolder.do";
+        		    }
+        		   	f.submit();
+        }        
+        function download_file(id,name,path,isfolder,issecure,downloadfile){       	
+    	    var f=document.form2;
+    	    f.method="post";
+    	    f.file_id.value=id;
+		    f.file_name.value=name;
+		    f.file_path.value=path;
+		    f.is_folder.value=isfolder;
+		    f.is_secure.value=issecure;
+		    f.functionality.value=downloadfile;
+    	    f.action="downloadFile.do";
+    		f.submit();
+    	}
+        function delete_file(id,name,path,isfolder,issecure,deletefile){
+        	str_file_id=id;
+		    str_file_name=name;
+		    str_file_path=path;
+		    str_is_folder=isfolder;
+		    str_is_secure=issecure;
+		    str_delete_file=deletefile;
+        	ShowDialog3(true);        	
+        }        
+        function sharefile(id,filename,userid,isfolder1,createdby1,ownerid){
+            document.form2.file_txt_id.value=id;
+            document.form2.file_txt_filename.value= filename;
+          	document.form2.file_txt_isfolder.value=isfolder1;       	 
+          	var f=document.form2;
+            f.method="post";
+            f.action='sharefile.do';
+            f.submit();
+          }
+      
+		function newWindow(doc,expiryDate,strExpMsg,strPrint){
+			window.open('common/simple_document.jsp?doc='+doc+'&expiryDate='+expiryDate+'&strExpMsg='+strExpMsg+'&strPrint='+strPrint,'open_window','menubar,toolbar,location,directories,status,scrollbars,resizable,dependent,width=640,height=480,left=0,top=0');
+		}
+        function getSelected(){        	
+        	var sel = document.getElementById("select");
+       		var selection = document.getElementById("selection").value;
+       		var index = sel.options[0].selected;
+    		var len = sel.length;
+    		for(var i=0;i<=len;i++){
+    			 var selectValue=sel.options[i].value;
+    			 if(selectValue == selection){
+    				 select.options[i].selected=true;
+        			 break;
+        		 	} 
+    		}
+        } 
+        function openFolderHierarchy(folpath,fid,folexpiry,intCounter,folname){   	        	
+        	var f=document.form2;
+        	f.file_id.value=fid;
+ 		    f.file_path.value=folpath;
+ 		    f.is_expiry.value=folexpiry;        	
+			f.f2path.value=folpath;	
+			f.file_name.value=folname;			
+			if(intCounter != 0){
+				f.cntInc.value=intCounter-1;
+			}else{
+				f.cntInc.value=intCounter;
+			}			   	
+	       	f.action="openFolder.do";
+	       	f.method="post";
+			f.submit();
+        }
+     </script>
+</head>
+
+    <%
+	String strBool = (String)request.getAttribute("bool");
+	if(strBool.length() > 0){
+	if(!strBool.equals("null")){	
+		String strExpiry = (String)request.getAttribute("strExpiredDateTime");
+		String strPrint = (String)request.getAttribute("strPrint");
+		String strExpMsg = (String)request.getAttribute("strExpMsg");	
+    %>
+<body onload="newWindow('<%= strBool%>','<%= strExpiry%>','<%= strExpMsg%>','<%= strPrint%>')">
+<%
+	}} else{
+%>
+<body onload="getSelected()">
+<% }%>
+
+<form name="form1" method="post" id="form1" enctype="multipart/form-data">
+<input type="hidden" id="f1path" name="f1path" value="<%=strf2path%>">
+<input type="hidden" id="f1fileid" name="f1fileid" value="">
+<input type="hidden" id="f1filename" name="f1filename" value="">
+<input type="hidden" id="f1isexpiry" name="f1isexpiry" value="">
+<input type="hidden" id="f1cntinc" name="f1cntinc" value="">
+ <div class="company-top-bar">
+            <div class="desktop-width mh-auto">
+                <div class="company-logo-container">
+                    <div class="company-logo"></div>                    
+                </div>
+                
+                <div class="pull-right mv15 prm">
+                	<a href="editprofile1.do">   
+					<span style="color:#ffffff;">Welcome:&nbsp;&nbsp;<%=logged_user%>
+             		<img src='<%=Photourl%>' width="40" height="40"/></span>
+             				</a>                    
+                 </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="container mv15">
+        <div class="row-fluid">
+            <div class="span3 b1px">
+                <ul class="ver-inline-menu">
+		            <li class="active"><a href="dashboard.do" data-toggle="tab"><i class="icon-briefcase"></i> Dashboard</a></li>
+		            <li><a href="groups.do" data-toggle="tab"><i class="icon-group"></i> Groups</a></li>
+		            <li><a href="contacts.do" data-toggle="tab"><i class="icon-user"></i> Contacts</a></li>
+		            <li><a href="editprofile1.do" data-toggle="tab"><i class="icon-info-sign"></i> Profile</a></li>
+		            <li><a href="help-faqs.do" data-toggle="tab"><i class="icon-tint"></i> Help</a></li>
+		            <li><a href="loadChPassword.do" data-toggle="tab"><i class="icon-tint"></i> Change Password</a></li>
+		            <li><a href="logout.do" data-toggle="tab"><i class="icon-plus"></i> Logout</a></li>
+	            </ul>
+            </div> 
+     <div class="span9">
+                <div class="row-fluid">
+                    <div class="span12">
+                       
+                        <div class="box_a">
+                            <div class="box_a_heading">
+                                <h3>Dashboard</h3>
+                            </div>
+                            <div class="cl"></div>
+                            <div class="spacer"></div>
+                             <div class="inside-sub-btn">
+                             <a href="#" class="btn blue" id="btnShowModal_FileUpload">
+                              <i class="icon-upload"></i>
+                               Upload
+                             </a>
+                           
+                             <a href="#" class="btn blue" id="btnShowModal_FolderUpload">
+                      
+                              <i class="icon-folder-open" ></i>
+                                    Create Folder
+                             </a>
+                          
+                                <div class="search_form">
+                                    <input  id="kwd_search" type="text" />
+                                    <button>
+                                    <i class="icon-search"></i>
+                                    </button>
+                                </div>
+                         </div>  
+                         
+                <div class="box_a_content cnt_a">
+                                <div class="row-fluid" >
+                               
+                                  <a href = "dashboard.do"><img id="ImageButton1" src="images/folder-icon.png"/></a>                                  
+                                  <!-- <img id="ImageSideArrow" src="images/path-navigation-div-line-arrow.png"/> --></a>
+      <%    
+     	 for(int j=0;j<=intCount;j++){
+  			if(!strArrName[j].equals("")){  			
+  			%>
+  			<img id="ImageSideArrow" src="images/path-navigation-div-line-arrow.png"/><a href="#" onclick="openFolderHierarchy('<%=strArrPath[j] %>','<%=strArrFileId[j] %>','<%=strArrIsExpiry[j] %>','<%=intCounter[j] %>','<%=strArrName[j] %>')"><%=strArrName[j] %></a>
+  			<%	}
+  		}
+  		
+      %>      
+                         
+                                          
+                                  <%-- <%  if(strFolderName!=null){   %>
+                                   
+                                 <span id="folderButton"><%=strFolderName %></span>
+                                  
+                                   <% }%> --%>
+                                </div>
+                                
+                                
+								 
+                                <div class="row-fluid">
+              
+		 <div id="lockit-events-data"><!--Data-table-Starts-->
+				<table width="0" border="0" cellpadding="0" cellspacing="0" class="lockit-grid">
+					<div class="row-fluid">        
+        				<% if(errmsg!=null){%>                    
+             				 <span id="error-holder"  style="color:red;"><%= errmsg %></span>
+       					 <%} %><br> 
+       					 <% if(msg!=null){%>              
+             				 <span id="error-holder"  style="color:Blue;"><%= msg %></span>
+       					 <%}
+       					 String success =(String)request.getAttribute("message1");
+										if (success !=null) {
+								 %>
+									<span style="color:red;" id="L_Message"><%=success%></span>
+
+										<% }%>                                
+		</div>
+		
+		<tr>
+			<td>
+				<table id="my-table" class="gridview" Width="100%" cellpadding="5" cellspacing="1" border="0" >
+					<thead>	
+					<tr style="border-bottom:0px solid #cecece;">
+						<td class="dropdown-grid" style="font: bolder;text-align: center;font-weight: bolder;color:white;">File Name </td>
+						<td class="dropdown-grid" style="font: bolder;text-align: center;font-weight: bolder;color:white;">Share</td>
+						<td class="dropdown-grid" style="font: bolder;text-align: center;font-weight: bolder;color:white;">Download</td>
+						<td class="dropdown-grid" style="font: bolder;text-align: center;font-weight: bolder;color:white;">
+			<%
+			if(strf2path.length() == 0 || strf2path == ""){
+			%>
+						<select class="dropdown-grid" id="select" name="select" onchange="get_selection(this.value)" id="DDSort" style="font: bolder;text-align: center;font-weight: bolder;">
+							<option value="All" id="all" selected>All</option>
+							<option value="Owned by me" id="own">Owned by me</option>
+							<option value="Shared with me" id="share">Shared with me</option>
+						</select>
+			<%
+				}else{
+			%>Owner
+			<%} %>
+						</td>
+						<td class="dropdown-grid" style="font: bolder;text-align: center;font-weight: bolder;color:white;">Delete</td>
+					</tr></thead>
+				<tbody>
+	    <%  
+		if(dropdown== null || dropdown.equals("All")){   
+			
+			 if(mydata!=null && mydata.size()>0){                                    
+				for(int i=0;i<mydata.size();i++){ 
+	    %>
+				<tr style="border-bottom:1px solid #cecece;">
+					<td ><img src='<%=mydata.get(i).get("fileImage") %>'/>&nbsp;<a class="position"  href="#"  onclick="open_file_folder('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "open"%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("IsExpiry")%>')" ><%=mydata.get(i).get("FileName")%></a></td>
+					<%-- <td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/share-icon.png"/><%}else{ %><a href="#"><img src="images/share-icon.png" onclick="sharefile('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("UserID")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("CreatedBy")%>')"/></a><%} %></td>
+			  		<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/download.png"/><%}else{ %><a href="#"><img src="images/download.png" onclick="download_file('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "download"%>')"/></a><%} %></td> --%>
+			  		<%  ArrayList<HashMap<String, Object>> shareStatus=(ArrayList<HashMap<String, Object>>)dashboardServiceImpl.fileOptions(logged_user_mail,mydata.get(i).get("FileID").toString());
+			  		System.out.println("shareStatus.size()>0 inside All **"+shareStatus.size());
+	     			if(shareStatus.size()>0){
+	     				%>
+	     			<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/share-icon-green.png"  style="cursor:not-allowed;"/><%}else{ if(mydata.get(i).get("sharing").equals("true")){ %><a href="#"><img src="images/share-icon-green.png" onclick="sharefile('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("UserID")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("CreatedBy")%>')"/></a><%}else{ %><img src="images/share-icon.png"  style="cursor:not-allowed;"/><%}}%></td>
+			  	<%
+	     			}else{		
+	     				%>
+	     			
+	     				<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/share-icon.png"  style="cursor:not-allowed;"/><%}else{ if(mydata.get(i).get("sharing").equals("true")){ %><a href="#"><img src="images/share-icon.png" onclick="sharefile('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("UserID")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("CreatedBy")%>')"/></a><%}else{ %><img src="images/share-icon.png"  style="cursor:not-allowed;"/><%}}%></td>
+				  		
+		<%	 } 	%>
+			  		<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/download.png"  style="cursor:not-allowed;"/><%}else{ if(mydata.get(i).get("Download").equals("true")){ %><a href="#"><img src="images/download.png" onclick="download_file('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "download"%>')"/></a><%}else { %><img src="images/download.png"  style="cursor:not-allowed;"/><%}}%></td>
+			  		<td style="font: bolder;text-align: center;"><%=mydata.get(i).get("Owner")%></td>
+					<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/del.png"  style="cursor:not-allowed;"/><%}else{ %><a href="#"><img src="images/del.png" onclick="delete_file('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "delete"%>')"/></a><%} %></td>
+				</tr>
+				
+	<% 
+		}
+	    }
+		} 
+		else if(dropdown.equals("Owned by me")){
+			 if(mydata!=null && mydata.size()>0){                                                 
+				for(int i=0;i<mydata.size();i++){                                                 	
+	 %>
+			<tr style="border-bottom:1px solid #cecece;">
+					<td ><img src='<%=mydata.get(i).get("fileImage") %>'/>&nbsp;<a class="position"  href="#"  onclick="open_file_folder('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "open"%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("IsExpiry")%>')" ><%=mydata.get(i).get("FileName")%></a></td>
+					<%  ArrayList<HashMap<String, Object>> shareStatus=(ArrayList<HashMap<String, Object>>)dashboardServiceImpl.fileOptions(logged_user_mail,mydata.get(i).get("FileID").toString());
+					System.out.println("shareStatus.size()>0 inside Owned **"+shareStatus.size());
+	     			if(shareStatus.size()>0){
+	     				%>
+					<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/share-icon-green.png" "cursor:not-allowed;"/><%}else{ if(mydata.get(i).get("sharing").equals("true")){ %><a href="#"><img src="images/share-icon-green.png" onclick="sharefile('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("UserID")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("CreatedBy")%>')"/></a><%}else{ %><img src="images/share-icon-green.png" "cursor:not-allowed;"/><%}}%></td>
+			  		<%
+	     			}else{		
+	     				%>
+	     			<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/share-icon.png" "cursor:not-allowed;"/><%}else{ if(mydata.get(i).get("sharing").equals("true")){ %><a href="#"><img src="images/share-icon.png" onclick="sharefile('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("UserID")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("CreatedBy")%>')"/></a><%}else{ %><img src="images/share-icon.png" "cursor:not-allowed;"/><%}}%></td>
+	     			<%	 } 	%>
+			  		<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/download.png" "cursor:not-allowed;"/><%}else{ if(mydata.get(i).get("Download").equals("true")){ %><a href="#"><img src="images/download.png" onclick="download_file('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "download"%>')"/></a><%}else { %><img src="images/download.png" "cursor:not-allowed;"/><%}}%></td>
+					<td style="font: bolder;text-align: center;"><%=mydata.get(i).get("Owner")%></td>
+					<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/del.png" "cursor:not-allowed;"/><%}else{ %><a href="#"><img src="images/del.png" onclick="delete_file('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "delete"%>')"/></a><%} %></td>
+				</tr>
+	<%
+			 }
+			 }
+		     }
+		 else if(dropdown.equals("Shared with me")){
+			 if(mydata!=null && mydata.size()>0){                                                 
+				for(int i=0;i<mydata.size();i++){                                                 	
+	 %>
+				<tr style="border-bottom:1px solid #cecece;">
+					<td ><img src='<%=mydata.get(i).get("fileImage") %>'/>&nbsp;<a class="position"  href="#"  onclick="open_file_folder('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "open"%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("IsExpiry")%>')" ><%=mydata.get(i).get("FileName")%></a></td>
+					<%  ArrayList<HashMap<String, Object>> shareStatus=(ArrayList<HashMap<String, Object>>)dashboardServiceImpl.fileOptions(logged_user_mail,mydata.get(i).get("FileID").toString());
+						System.out.println("shareStatus.size()>0 inside shared **"+shareStatus.size());
+	     			if(shareStatus.size()>0){
+	     				%>
+					<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/share-icon-green.png" "cursor:not-allowed;"/><%}else{ if(mydata.get(i).get("sharing").equals("true")){ %><a href="#"><img src="images/share-icon-green.png" onclick="sharefile('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("UserID")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("CreatedBy")%>')"/></a><%}else{ %><img src="images/share-icon-green.png" "cursor:not-allowed;"/><%}}%></td>
+			  		<%
+	     			}else{		
+	     				%>
+	     			<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/share-icon.png" "cursor:not-allowed;"/><%}else{ if(mydata.get(i).get("sharing").equals("true")){ %><a href="#"><img src="images/share-icon.png" onclick="sharefile('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("UserID")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("CreatedBy")%>')"/></a><%}else{ %><img src="images/share-icon.png" "cursor:not-allowed;"/><%}}%></td>
+	     			<%	 } 	%>
+			  		<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/download.png" style="cursor:not-allowed;"><%}else{ if(mydata.get(i).get("Download").equals("true")){ %><a href="#"><img src="images/download.png" onclick="download_file('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "download"%>')"/></a><%}else { %><img src="images/download.png" "cursor:not-allowed;"/><%}}%></td>
+					<td style="font: bolder;text-align: center;"><%=mydata.get(i).get("Owner")%></td>
+					<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/del.png" style="cursor:not-allowed;"/><%}else{ %><a href="#"><img src="images/del.png" onclick="delete_file('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "delete"%>')"/></a><%} %></td>
+				</tr>
+	<%
+			 }
+			 }
+		     }
+	 %>                                     
+					<tbody>	</table>
+							</td>
+						</tr>
+					</table>
+			</div><!--Data-table-Ends-->
+		</div><!--datatable-nav-content- Ends -->
+	</div><!--datatable-nav-container- Ends -->
+</div><!--datatable-nav-wrapper- Ends-->
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!--   UPLOAD FILE    -->
+ 
+ <div id="overlay" class="web_dialog_overlay1"></div>
+ <div id="dialog" class="web_dialog1">
+     
+    
+        <div class="modal-header">Upload File</div>
+         <div>&nbsp;</div>
+        <div class="span2"><span id="lblMessage" style="color:Red;"></span></div>
+        <div class="row">
+            <div class="span8">
+            <div class="span4">
+            <input name="file_type" type="radio" id="file_type" value="secure" checked="checked"/>Secure
+            <input name="file_type" type="radio" id="file_type" value="non-secure" />Non-Secure
+            </div>
+            </div>
+        </div>
+        <div>&nbsp;</div>
+        <div class="row">
+            <div class="span8">
+            <div class="span4"><input name="Choose File" type="file" id="Choose File" value="Choose File" /></div>
+            </div>
+            
+        </div>
+         <div>&nbsp;</div>
+        <div class="modal-item">
+            <input type="button" name="btnUploadFile" value="Upload" id="btnUploadFile" class="btn btn-primary" />
+            <input type="button" name="btnCancelFile" value="Cancel" id="btnCancelFile" class="btn btn-primary" />
+        </div>
+    </div>
+   
+<!--   UPLOAD FOLDER    -->
+ 
+ <div id="overlay1" class="web_dialog_overlay"></div>
+ <div id="dialog1" class="web_dialog">
+     
+    
+        <div class="modal-header">New Folder</div>
+         <div>&nbsp;</div>
+        <div class="span2"><span id="lblMessage" style="color:Red;"></span></div>
+        <div>&nbsp;</div>
+        <div class="row">
+            <div class="span8">
+            <div class="span4">Folder Name:<input type="text" id="foldername" name="foldername" value=""/></div>
+            </div>
+            
+        </div>
+         <div>&nbsp;</div>
+        <div class="modal-item">
+            <input type="button" name="btnUploadFolder" value="Create" id="btnUploadFolder" class="btn btn-primary" />
+            <input type="button" name="btnCancelFolder" value="Cancel" id="btnCancelFolder" class="btn btn-primary" />
+        </div>
+    </div>
+    
+<!--   DELETE File/Folder   -->
+   
+   <div id="overlay3" class="web_dialog_overlay"></div>
+ 	<div id="dialog3" class="web_dialog1">
+        <div class="modal-header">Are you sure to delete this File/Folder?</div>
+        <div class="modal-item">
+            
+            <input type="submit" name="btnDelFileFolder" value="Yes" id="btnDelFileFolder" class="btn btn-primary" />&nbsp;
+            <input type="submit" name="btnCancelDelFileFolder" value="No" id="btnCancelDelFileFolder" class="btn btn-primary" />
+        </div>
+    </div>
+
+<!--FOOTER-->
+
+        <div class="navbar navbar-bottom full mh-auto">
+            <div class="navbar-inner">
+                <div class="mh-auto desktop-width">
+                    <div class="navbar-inner-text">POWERED BY VERUDIX SOLUTIONS</div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+       
+</form>
+	<form name="form2" method="post" id="form2">
+	<input type="hidden" name="is_folder" value="">
+	<input type="hidden" name="file_name" value="<%= strFolderName%>">
+	<input type="hidden" name="file_id" value="<%= strFileId%>">
+	<input type="hidden" name="file_path" value="">
+	<input type="hidden" name="is_secure" value="">
+	<input type="hidden" name="functionality" value="">
+	<input type="hidden" name="owner_id" value="">
+	<input type="hidden" name="is_expiry" value="<%= strIsExpiry%>">
+	<input type="hidden" id="selection" name="selection" value="<%= dropdown%>">
+	<input type="hidden" id="f2path" name="f2path" value="<%= strf2path%>">
+
+   <input type="hidden" name="file_options" id="file_options" value="">
+   <input type="hidden" name="file_txt_email" id="file_txt_email" value="">
+   <input type="hidden" name="file_txt_edays" id="file_txt_edays" value="">
+   <input type="hidden" name="file_txt_ehours" id="file_txt_ehours" value="">
+   <input type="hidden" name="file_txt_eminuts" id="file_txt_eminuts" value="">
+   <input type="hidden" name="file_txt_id" id="file_txt_id" value="">
+   <input type="hidden" name="file_txt_isfolder" id="file_txt_isfolder" value="">
+   <input type="hidden" name="file_txt_createdby" id="file_txt_createdby" value="">
+   <input type="hidden" name="file_txt_filename" id="file_txt_filename" value="">
+   <input type="hidden" name="cntInc" id="cntInc" value="">	
+   
+</form>
+</body>
+</html>

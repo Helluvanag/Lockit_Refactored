@@ -1,0 +1,324 @@
+<%@page import="java.util.List"%>
+
+<%@page import="java.util.Vector"%>
+<%@page import="com.verudix.lockit.service.EditGroupServiceImpl"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.ArrayList"%>
+
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" session="true"
+    pageEncoding="ISO-8859-1"%>
+    
+    <%
+
+	String logged_user = (String)session.getAttribute("user_name");
+	String logged_user_mail = (String)session.getAttribute("user_mail");
+	String gname = (String)session.getAttribute("groupname");
+	String gid = (String)session.getAttribute("groupid");
+	System.out.println("logged_user...."+logged_user);
+	System.out.println("logged_user_mail...."+logged_user_mail+"gname..."+gname+"gid..."+gid);	
+	EditGroupServiceImpl editGroupServiceImpl=(EditGroupServiceImpl)config.getServletContext().getAttribute("editGroupServiceImpl");
+	System.out.println("The editGroupServiceImpl object ************"+editGroupServiceImpl);
+	String Photourl = (String)request.getAttribute("Photourl");	
+	
+	%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+ <title>Lockit - Edit Group</title>
+
+        <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+            
+        <!-- Bootstrap framework -->
+            <link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
+        <!-- main styles -->
+            <link rel="stylesheet" href="css/main.css" />
+            <link rel="stylesheet" href="css/lockit.css" />
+        <!-- elusive webicons -->
+            <link rel="stylesheet" href="css/elusive/css/elusive-webfont.css" />
+            
+        <!-- custom fonts -->
+            <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' />          
+            <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,300&amp;subset=latin,latin-ext' rel='stylesheet'>
+        <!-- custom assets -->
+        <link href="assets/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css"/>
+        
+        <link href="css/styles.css" rel="stylesheet" type="text/css" />
+<script src="js/jquery-1.4.3.min.js" type="text/javascript"></script>
+    <style type="text/css">
+		.modalBackground
+		{
+		background-color: #fff;
+		filter: alpha(opacity=80);
+		opacity: 0.8;
+		z-index: 10000;
+		}
+		.RadioClass
+		{
+		width:600px;
+		}
+		
+		.level1
+		{
+		  border:1px solid #a8a6a6;
+		  
+		  margin:0px;
+		  padding: 5px;
+		  background-color: #cecece;
+		  font:bold 13px Arial, Helvetica, sans-serif;
+		  color: #000000;
+		  height: 30px;
+		  line-height: 25px;
+		  text-align: center;
+		  width:500px;
+		 }
+		 
+		.level1 a:hover
+		{
+		 color:#fff;       }
+		 
+		 .level1 a
+		{
+		 color:#000;       } 
+		 
+
+	</style>
+
+<script type="text/javascript">
+
+
+function pagination(pagenumber){
+		
+	 document.getElementById("pageNumber").value = pagenumber;
+	
+	 var f=document.form1;
+	 f.method="post";
+	 f.action='editgroup.do';
+	 f.submit();
+	 
+}
+
+
+	function update_group(id){
+		
+		var message = "";
+
+		   //For each checkbox see if it has been checked, record the value.
+		   for (i = 0; i < form1.chkheader_editgroup.length; i++)
+		   {
+			 
+		      if (form1.chkheader_editgroup[i].checked){
+		         message = message + form1.chkheader_editgroup[i].value + ","
+		      }
+		   }
+		  
+		 if(message.length>0){
+			 
+			
+			 document.getElementById("selection").value = message;
+			 document.getElementById("groupid").value = id;
+			
+			 var f=document.form1;
+	 		 f.method="post";
+	 		 f.action='updategroup.do';
+	 		 f.submit();
+			
+		 }else{
+			 
+			 document.getElementById("error-holder1").innerHTML = "Please select contact(s) to update group.";
+		 }
+		
+		 
+		
+	}
+
+</script>
+<script type="text/javascript">
+		$(function(){
+		 
+		    // add multiple select / deselect functionality
+		    $("#selectall").click(function () {
+		          $('.chkheader_editgroup').attr('checked', this.checked);
+		    });
+		 
+		    // if all checkbox are selected, check the selectall checkbox
+		    // and viceversa
+		    $(".chkheader_editgroup").click(function(){
+		 
+		        if($(".chkheader_editgroup").length == $(".chkheader_editgroup:checked").length) {
+		            $("#selectall").attr("checked", "checked");
+		        } else {
+		            $("#selectall").removeAttr("checked");
+		        }
+		 
+		    });
+		});
+	</script>
+</head>
+<body>
+<form id="form1" method="post" name="form1" action="editgroup.do">
+
+    <div class="company-top-bar">
+            <div class="desktop-width mh-auto"">
+                <div class="company-logo-container">
+                    <div class="company-logo"></div>
+                </div>
+                <div class="pull-right mv15 prm">
+           
+             		<a href="editprofile1.do">     	
+   
+					<span style="color:#ffffff;">Welcome:&nbsp;&nbsp;<%=logged_user%>
+  	
+             		<img src='<%=Photourl%>' width="40" height="40"/></span>
+             				</a>
+             		<%
+
+                	 
+                	%>
+                	 </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="container mv15">
+        <div class="row-fluid">
+            <div class="span3">
+                <ul class="ver-inline-menu">
+		            <li><a href="dashboard.do" data-toggle="tab"><i class="icon-briefcase"></i> Dashboard</a></li>
+		            <li class="active"><a href="groups.do" data-toggle="tab"><i class="icon-group"></i> Groups</a></li>
+		            <li><a href="contacts.do" data-toggle="tab"><i class="icon-user"></i> Contacts</a></li>
+		            <li><a href="editprofile1.do" data-toggle="tab"><i class="icon-info-sign"></i> Profile</a></li>
+		            <li><a href="help-faqs.do" data-toggle="tab"><i class="icon-tint"></i> Help</a></li>
+		            <li><a href="changePassword.do" data-toggle="tab"><i class="icon-tint"></i> Change Password</a></li>
+                    <li><a href="logout.do" data-toggle="tab"><i class="icon-plus"></i> Logout</a></li>
+	            </ul>
+            </div>
+            <div class="span9">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div class="box_a">
+                            <div class="box_a_heading">
+                                <h3>Edit Group</h3>
+                            </div>
+                            <div class="box_a_content cnt_a">
+                                
+                             <p  style="text-align:left;  color:Blue" > <span id="L_Message">Select / Deselect users to update the group : <%=gname %></span> </p>
+ 
+								<span id="error-holder1" style="color:black;"></span>
+			<table class="gridview" cellspacing="1" cellpadding="5" border="0">
+				<thead>
+					<tr>
+						<th scope="col"><input id="selectall" type="checkbox"/></th>
+					   	<th align="left" scope="col"><a href="javascript:__doPostBack(&#39;gv_editgroup&#39;,&#39;Sort$displayname&#39;)">Name</a></th>
+					   	<th scope="col"><a href="javascript:__doPostBack(&#39;gv_editgroup&#39;,&#39;Sort$UserID&#39;)">UserID</a></th>
+					</tr>
+				</thead>
+				
+				<tbody>
+										
+				 <%
+				 	try{				 		
+				 		 Vector<String> user_id = new  Vector<String>();
+			 			 Vector<String> is_active = new  Vector<String>();				 		    				 		
+				 		 ArrayList<HashMap<String, Object>> mydata2 = editGroupServiceImpl.getGroupUserContacts(logged_user_mail, gid);				 		 		
+				 		if(mydata2!=null && mydata2.size()>0){				 			
+				 			for(int i=0;i<mydata2.size();i++){	          			 
+				 				user_id.add(i,mydata2.get(i).get("UserID").toString());
+				 				is_active.add(i,mydata2.get(i).get("IsActive").toString());
+				 			}
+				 		}				 	
+                    	 
+                    	 ArrayList<HashMap<String, Object>> mydata1 =  (ArrayList<HashMap<String, Object>>)session.getAttribute("editgroupallusercontacts");                	                		 
+                    	                    	 
+				          if(mydata1!=null && mydata1.size()>0){				          
+				          	for(int i=0;i<mydata1.size();i++){	
+				          		String userID = (String)mydata1.get(i).get("userID");				          		
+				          		if(user_id.contains(userID)){				          			
+					          		%>
+									 <tr>
+										<td><input class="chkheader_editgroup" name="chkheader_editgroup" type="checkbox" value='<%=mydata1.get(i).get("userID")%>' checked="checked"/></td>
+										<td><%=mydata1.get(i).get("displayname")%></td>
+										<td><%=mydata1.get(i).get("userID")%></td>
+									</tr> 
+								   <%
+				          		}else{
+				          			%>
+									 <tr>
+										<td><input class="chkheader_editgroup" name="chkheader_editgroup" type="checkbox" value='<%=mydata1.get(i).get("userID")%>'/></td>
+										<td><%=mydata1.get(i).get("displayname")%></td>
+										<td><%=mydata1.get(i).get("userID")%></td>
+									</tr> 
+								   <%
+				          		}
+				          }
+				          	
+				        }
+						}catch(Exception e){
+						    System.out.println("error1 in edit groups..."+e.toString()); 
+				 	}
+       			  %>		
+				</tbody>
+						
+				<tr class="pgr">
+						<td colspan="3">
+							<table border="0">
+								<tr>
+									<td>
+									<%
+									try{
+										List pageNumbers = null;
+										pageNumbers = (List) session.getAttribute("editgrouppages");
+								for (int i = 0; i <pageNumbers.size(); i++) {
+								%>
+							<a class="pagination-sty" href="javascript:__doPostBack(&#39;gv_editgroup&#39;,&#39;Page$1&#39;)" onclick="pagination('<%=pageNumbers.get(i)%>')"><%=pageNumbers.get(i)%></a>
+				
+								<%
+								}
+									}catch(Exception e){
+										
+									}
+								%>
+									</td>
+								</tr>	
+							</table>
+						</td>
+					</tr>		
+					
+						
+														
+			</table>
+                              
+            </div>                          
+
+    <p>&nbsp;</p>
+		<p style="text-align:center">
+		  <input type="button" name="Btn_Save" value="Update" id="Btn_Save" class="btn btn-primary" onclick="update_group('<%=gid %>');" />  &nbsp; &nbsp;
+		  
+			<a href="groups.do"><input type="button" name="Btn_Cancel" value="Back to List" id="Btn_Cancel" class="btn btn-primary" /></a>
+</p>
+                     
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="navbar navbar-bottom full mh-auto">
+            <div class="navbar-inner">
+                <div class="mh-auto desktop-width">
+                    <div class="navbar-inner-text">POWERED BY VERUDIX SOLUTIONS</div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+
+     
+         <input type="hidden" name="selection" value="" id="selection"/> 
+           <input type="hidden" name="groupid" value="" id="groupid"/>      
+         <input type="hidden" name="pageNumber" value="" id="pageNumber"/>  
+   
+        </form>
+</body>
+</html>

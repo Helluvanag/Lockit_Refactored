@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:mvc="http://www.springframework.org/schema/mvc" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="
+    http://www.springframework.org/schema/beans     
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+    <context:component-scan base-package="com.verudix.lockit.controller" />
+   
+    <mvc:annotation-driven />
+    
+    <mvc:interceptors>
+   		<mvc:interceptor>
+   			<mvc:mapping path="/help-faqs.do" />
+     		<mvc:mapping path="/changePassword.do" />
+     		<mvc:mapping path="/dashboard.do" />
+     		<mvc:mapping path="/openFile.do" />
+     		<mvc:mapping path="/openFolder.do" />
+     		<mvc:mapping path="/downloadFile.do" />
+     		<mvc:mapping path="/deleteFile.do" />
+     		<mvc:mapping path="/sharefile.do" />
+     		<mvc:mapping path="/sharefile_prpUpdate.do" />
+     		<mvc:mapping path="/sharefile_folder.do" />
+     		<mvc:mapping path="/contacts.do" />
+     		<mvc:mapping path="/addcontact.do" />
+     		<mvc:mapping path="/deletecontact.do" />
+     		<mvc:mapping path="/updatecontact.do" />
+     		<mvc:mapping path="/deletecontacts.do" />
+     		<mvc:mapping path="/editgroup.do" />
+     		<mvc:mapping path="/updategroup.do" />
+     		<mvc:mapping path="/groups.do" />
+     		<mvc:mapping path="/addnewgroup.do" />
+     		<mvc:mapping path="/deletegroup.do" />
+     		<mvc:mapping path="/editprofile1.do" />
+     		<mvc:mapping path="/updateprofile.do" />
+     		<mvc:mapping path="/loadChPassword.do" />
+     		<mvc:mapping path="/sharePopup.do" />
+     		<mvc:mapping path="/addgroup.do" />
+     		<mvc:mapping path="/uploadfile.do" />
+     		<mvc:mapping path="/importactivedirectory.do" />
+     		<mvc:mapping path="/importactivedirectorycontacts.do" />
+     		<bean class="com.verudix.lockit.util.SessionHandler" />
+   		</mvc:interceptor>
+	</mvc:interceptors>
+	
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+        <property name="prefix" value="/WEB-INF/jsp/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+    <bean id="dataSource"  destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+  		 <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+   		 <property name="url" value="jdbc:mysql://localhost:3306/lockit?autoReconnect=true"/>
+   		 <property name="username" value="root"/>
+  		 <property name="password" value="pass"/>
+  		 <property name="validationQuery" value="select 1 from dual"/>
+		 <property name="testOnBorrow" value="true"/> 
+		 <property name="maxWait" value="30000" />
+		 <property name="maxIdle" value="-1" />
+		 <property name="maxActive" value="-1" />	 
+	</bean>
+		
+	<bean name="loginController" class="com.verudix.lockit.controller.LoginController"><property name="loginService" ref="loginServiceImpl" /></bean>
+	<bean name="dashboardController" class="com.verudix.lockit.controller.DashboardController"><property name="dashboardService" ref="dashboardServiceImpl" /></bean>
+	<bean name="groupsController" class="com.verudix.lockit.controller.GroupsController"><property name="groupsService" ref="groupsServiceImpl" /><property name="dashboardService" ref="dashboardServiceImpl" /></bean>
+	<bean name="editGroupController" class="com.verudix.lockit.controller.EditGroupController"><property name="editGroupService" ref="editGroupServiceImpl" /><property name="dashboardService" ref="dashboardServiceImpl" /></bean>
+	<bean name="contactsController" class="com.verudix.lockit.controller.ContactsController"><property name="contactsService" ref="contactsServiceImpl" /><property name="dashboardService" ref="dashboardServiceImpl" /></bean>
+	<bean name="profileController" class="com.verudix.lockit.controller.ProfileController"><property name="profileService" ref="profileServiceImpl" /><property name="dashboardService" ref="dashboardServiceImpl" /></bean>
+	<bean name="uploadFileController" class="com.verudix.lockit.controller.UploadFileController"><property name="uploadFileService" ref="uploadFileServiceImpl" /></bean>
+	<bean name="commonController" class="com.verudix.lockit.controller.CommonController"><property name="commonService" ref="commonServiceImpl" /><property name="dashboardService" ref="dashboardServiceImpl" /></bean>
+	<bean name="logoutController" class="com.verudix.lockit.controller.LogoutController"></bean>
+		
+	<bean name="loginServiceImpl" class="com.verudix.lockit.service.LoginServiceImpl"><property name="userDao" ref="userDaoImpl" /></bean>
+	<bean name="dashboardServiceImpl" class="com.verudix.lockit.service.DashboardServiceImpl"><property name="dashboardDao" ref="dashboardDaoImpl" /></bean>
+	<bean name="groupsServiceImpl" class="com.verudix.lockit.service.GroupsServiceImpl"><property name="groupsDao" ref="groupsDaoImpl" /></bean>
+	<bean name="editGroupServiceImpl" class="com.verudix.lockit.service.EditGroupServiceImpl"><property name="editGroupDao" ref="editGroupDaoImpl" /></bean>
+	<bean name="contactsServiceImpl" class="com.verudix.lockit.service.ContactsServiceImpl"><property name="contactsDao" ref="contactsDaoImpl" /></bean>
+	<bean name="profileServiceImpl" class="com.verudix.lockit.service.ProfileServiceImpl"><property name="profileDao" ref="profileDaoImpl" /></bean>
+	<bean name="uploadFileServiceImpl" class="com.verudix.lockit.service.UploadFileServiceImpl"><property name="uploadFileDao" ref="uploadFileDaoImpl" /></bean>
+	<bean name="commonServiceImpl" class="com.verudix.lockit.service.CommonServiceImpl"><property name="commonDao" ref="commonDaoImpl" /></bean>
+	
+	<bean id="userDaoImpl" class="com.verudix.lockit.dao.UserDaoImpl"><property name="dataSource" ref="dataSource"/></bean>
+	<bean id="dashboardDaoImpl" class="com.verudix.lockit.dao.DashboardDaoImpl"><property name="dataSource" ref="dataSource"/></bean>
+	<bean id="groupsDaoImpl" class="com.verudix.lockit.dao.GroupsDaoImpl"><property name="dataSource" ref="dataSource"/></bean>
+	<bean id="editGroupDaoImpl" class="com.verudix.lockit.dao.EditGroupDaoImpl"><property name="dataSource" ref="dataSource"/></bean>
+	<bean id="contactsDaoImpl" class="com.verudix.lockit.dao.ContactsDaoImpl"><property name="dataSource" ref="dataSource"/></bean>
+	<bean id="profileDaoImpl" class="com.verudix.lockit.dao.ProfileDaoImpl"><property name="dataSource" ref="dataSource"/></bean>
+	<bean id="uploadFileDaoImpl" class="com.verudix.lockit.dao.UploadFileDaoImpl"><property name="dataSource" ref="dataSource"/></bean>
+	<bean id="commonDaoImpl" class="com.verudix.lockit.dao.CommonDaoImpl"><property name="dataSource" ref="dataSource"/></bean>
+	
+	<bean class="org.springframework.web.context.support.ServletContextAttributeExporter">
+		<property name="attributes">
+			<map>
+				<entry key="dashboardServiceImpl"><ref bean="dashboardServiceImpl"/></entry>				
+			</map>			
+		</property>
+	</bean>
+	
+	
+</beans>
+
+      
+
+
