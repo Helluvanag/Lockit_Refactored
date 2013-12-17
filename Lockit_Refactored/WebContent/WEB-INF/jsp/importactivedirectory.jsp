@@ -123,9 +123,9 @@ function importactivedirectory(){
           <div class="Lockit-main-content fl">
           	<div class="navigation-path fl">
             	<ul>
-                	<li><a href="#"><img src="images/navigation-path-hm-icn.png" /></a></li>
+                	<li><a href="dashboard.do"><img src="images/navigation-path-hm-icn.png" /></a></li>
                 	<li><img src="images/navigation-path-divlin-icn.png" /></li>
-                	<li><a href="#">Groups > Import Active Directory</a></li>
+                	<li><a href="groups.do">Groups > Import Active Directory</a></li>
                 </ul>
             </div>
           	<div class="Body-Title fl">

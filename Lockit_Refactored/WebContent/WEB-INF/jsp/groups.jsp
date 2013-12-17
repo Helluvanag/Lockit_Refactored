@@ -40,10 +40,21 @@
             <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' />          
         <!-- custom assets -->
         <link href="assets/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css"/>
-        
-        <script src="js/jquery-1.4.3.min.js" type="text/javascript"></script>
-        
+        <link rel="stylesheet" href="Scripts/datepicker.css"/>       
         <link href="css/styles.css" rel="stylesheet" type="text/css" />
+                
+        <script src="js/jquery-1.4.3.min.js" type="text/javascript"></script>
+        <script  src="Scripts/prototype-1.js"  type="text/javascript"></script>
+		<script src="Scripts/prototype-base-extensions.js"  type="text/javascript"></script>
+		<script  src="Scripts/prototype-date-extensions.js"  type="text/javascript"></script>
+		<script src="Scripts/behaviour.js"  type="text/javascript"></script>
+		<script src="Scripts/datepicker.js"  type="text/javascript"></script>
+        <script  src="Scripts/behaviors.js"  type="text/javascript"></script>
+		<script src="js/jquery.min.js" type="text/javascript"></script>
+		
+        
+        
+         
         
 
    		<style type="text/css">
@@ -185,41 +196,55 @@
 
  	<script type="text/javascript">
 
-		function delete_group(user,id){
-			
+		function delete_group(user,id){			
 			username = user;
 			groupid = id;
-			ShowDialog1(true);
-			   	 
+			ShowDialog1(true);			   	 
 		}
-		function editGroup(groupname,id){
-			
-		
+		function editGroup(groupname,id){	
 			 document.getElementById("editgroupname").value = groupname;
-			 document.getElementById("editgroupid").value = id;
-			 				
+			 document.getElementById("editgroupid").value = id;			 				
 			 var f=document.form1;
         	 f.method="post";
         	 f.action='displayeditgroup.do';
         	 f.submit();
 		}
 		
-			
-			
 	</script>
  
  	<script type="text/javascript">
 
         $(document).ready(function ()
         {
-           
-            $("#btnShowModal_addGroup").click(function (e)
+        	$("#kwd_search").keyup(function(){
+     		   // When value of the input is not blank
+     		
+     		   if( $(this).val() != "")
+     		   {
+     		    // Show only matching TR, hide rest of them
+     		    $("#my-table tbody>tr").hide();
+     		    $("#my-table td:contains-ci('" + $(this).val() + "')").parent("tr").show(); 
+     		   }
+     		   else
+     		   {
+     		    // When there is no input or clean again, show everything back
+     		    $("#my-table tbody>tr").show();
+     		   }
+     	});
+     	 $.extend($.expr[":"], 
+     			 {
+     			     "contains-ci": function(elem, i, match, array) 
+     			  {
+     			   return (elem.textContent || elem.innerText || $(elem).text() || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+     			 }
+     	});
+        $("#btnShowModal_addGroup").click(function (e)
             {
                 ShowDialog(true);
                 e.preventDefault();
             });
           
-            $("#btnCreateNewGroup").click(function (e)
+         $("#btnCreateNewGroup").click(function (e)
             {    
 	        	if (document.form1.txt_GroupName.value == ""){
 	        		document.getElementById("rfv1").innerHTML ="This field is required";
@@ -272,8 +297,8 @@
                   HideDialog1();
                   e.preventDefault();
              });  
+       
         });
-
         function ShowDialog(modal)
         {
             $("#overlay").show();
@@ -320,37 +345,9 @@
             $("#overlay1").hide();
             $("#dialog1").fadeOut(300);
         } 
-    </script>
-    
-    <script type="text/javascript">
-	
-	$(document).ready(function(){
-		// Write on keyup event of keyword input element
-		$("#kwd_search").keyup(function(){
-			// When value of the input is not blank
-			if( $(this).val() != "")
-			{
-				// Show only matching TR, hide rest of them
-				$("#my-table tbody>tr").hide();
-				$("#my-table td:contains-ci('" + $(this).val() + "')").parent("tr").show();
-			}
-			else
-			{
-				// When there is no input or clean again, show everything back
-				$("#my-table tbody>tr").show();
-			}
-		});
-	});
-	// jQuery expression for case-insensitive filter
-	$.extend($.expr[":"], 
-	{
-	    "contains-ci": function(elem, i, match, array) 
-		{
-			return (elem.textContent || elem.innerText || $(elem).text() || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
-		}
-	});
-	
-	</script>
+   
+    </script>    
+   
 	<script type="text/javascript">
 		$(function(){
 		 
@@ -422,9 +419,9 @@
           <div class="Lockit-main-content fl">
           	<div class="navigation-path fl">
             	<ul>
-                	<li><a href="#"><img src="images/navigation-path-hm-icn.png" /></a></li>
+                	<li><a href="dashboard.do"><img src="images/navigation-path-hm-icn.png" /></a></li>
                 	<li><img src="images/navigation-path-divlin-icn.png" /></li>
-                	<li><a href="#">Groups</a></li>
+                	<li><a href="groups.do">Groups</a></li>
                 </ul>
             </div>
           	<div class="Body-Title fl">
@@ -437,8 +434,8 @@
                 		<li><a class="login-btn" href="importactivedirectory.do"><img src="images/ImportA-Directry-btn.png" /></a></li>
                     	<li><a class="login-btn" href="addgroup.do"><img src="images/addgroup-btn.png" /></a></li>
                     	<li><input class="name small-txt" type="text" id="kwd_search" value="" placeholder="Search"/>
-                                <button><i class="icon-search"></i>
-                                    </button>
+                                <!-- <button> <i class="icon-search"></i> -->
+                                   <!--  </button> -->
                         </li>
                     </ul>
                 </div>
@@ -519,7 +516,7 @@
 					</table>
 		 	</div>
 		 	<div class="lockit-data-tables wd fl">
-		 		<table class="table th-font-color">
+		 		<table id="my-table" class="table th-font-color">
 									
 							      <div class="row-fluid">   
  								<% 
@@ -537,17 +534,13 @@
 												<tr class="th-font-weight">
 											    	<th class="img-align-left">Group </th>
 													<th class="img-align-left">Edit </th>
-													<th class="img-align-left">Delete </th>
+													<th class="img-align-center">Delete </th>
 												</tr>
 											</thead>
 											<tbody>
 						 <%
-          
-                   
           ArrayList<HashMap<String, Object>> mydata = (ArrayList<HashMap<String, Object>>)request.getAttribute("groups_data");
-         
-          
-          
+        
           if(mydata!=null && mydata.size()>0){
           
           	for(int i=0;i<mydata.size();i++){
@@ -558,15 +551,16 @@
 													
 				<td onclick="editGroup('<%=mydata.get(i).get("groupname")%>','<%=mydata.get(i).get("groupid")%>');"><a href="#"><%=mydata.get(i).get("groupname")%></a></td>
 				<td onclick="editGroup('<%=mydata.get(i).get("groupname")%>','<%=mydata.get(i).get("groupid")%>');"><a href="#"><img src="images/edit.png" /></a></td>
-			    <td><a href="#"><img src="images/del.png" onclick="delete_group('<%=logged_user_mail%>','<%=mydata.get(i).get("groupid")%>')"/></a></td>
+			    <td  class="img-align-center"><a href="#"><img src="images/del.png" onclick="delete_group('<%=logged_user_mail%>','<%=mydata.get(i).get("groupid")%>')"/></a></td>
 			
 				 </tr>
 				
 			<%
           }
-          }
-          
-          %>													
+          }else{         
+          %>
+          <B>No Data Found.</B>	
+          <%} %>												
 							                                                                             
 								</tbody>		                                             
 											</table>

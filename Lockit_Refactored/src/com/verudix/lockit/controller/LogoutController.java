@@ -20,6 +20,11 @@ public class LogoutController {
 			if(session != null){
 				session.setAttribute("user_name", "");
 				session.setAttribute("user_mail", "");
+				session.setAttribute("strArrName",  "");
+         		session.setAttribute("strArrPath",  "");
+         		session.setAttribute("strArrFileId",  "");
+         		session.setAttribute("strArrIsExpiry",  "");
+         		session.setAttribute("intCounter",  "");
 				session.invalidate();
 			}
 		}catch(Exception e){

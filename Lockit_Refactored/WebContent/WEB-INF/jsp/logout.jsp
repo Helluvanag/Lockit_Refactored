@@ -1,13 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" session="true"
-    pageEncoding="ISO-8859-1"%>
- 
- <%
- //session.setAttribute("selected_folder", "");
- /* session.setAttribute("user_name", "");
- session.setAttribute("user_mail", ""); */
- //session.setAttribute("photourl", "");
- %>
-   
+    pageEncoding="ISO-8859-1"%> 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -17,6 +10,21 @@
 <body>
 
 <jsp:include page="login.jsp"></jsp:include>
+<%
+Cookie cookie = null;
+Cookie[] cookies = null;
+// Get an array of Cookies associated with this domain
+cookies = request.getCookies();
 
+if( cookies != null ){
+    
+    for (int i = 0; i < cookies.length; i++){
+       cookie = cookies[i];
+       System.out.println("Name : " + cookie.getName( ) + ",  ");
+       System.out.println("Value: " + cookie.getValue( )+" <br/>");
+    }}else{
+    	System.out.println("<h2>No cookies founds</h2>");
+          }
+%>
 </body>
 </html>

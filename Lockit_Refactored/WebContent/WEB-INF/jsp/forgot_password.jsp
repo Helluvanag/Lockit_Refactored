@@ -34,7 +34,20 @@ String logged_user_mail = (String)session.getAttribute("user_mail");
             <script src="js/ie/html5shiv.min.js"></script>
         <![endif]-->
         
+  <script>
+
+function checkEmail() {
+
+    var email = document.getElementById('txtUserName');
+    var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+    if (!filter.test(email.value)) {
  
+    document.getElementById("error").innerHTML="Enter Valid Email Id.";
+    email.focus;
+    return false;
+ }
+}</script>
 
 </head>
 <body>
@@ -56,6 +69,7 @@ String logged_user_mail = (String)session.getAttribute("user_mail");
             
             	<div class="login-content">
                     <img src="images/forgot-password.png" />
+                    
                     	<%
 				        String errorMsg = (String)request.getParameter("errorMsg");
 				        
@@ -63,16 +77,18 @@ String logged_user_mail = (String)session.getAttribute("user_mail");
 				        %>
 				        <div><%= errorMsg%></div>
 				        <%} %>
+				       
                     <div class="margin-left-login">
 						<div class="lockit-google-login">                    	
                             <div class="login-with-lockit">
+                            <span id ="error" style="color:#ff0000;"></span>
                             	<ul>
                             		<li>Enter an email address to help us locate your account</li>
 		                            <li>
 		                            	<input name="email"  type="text" maxlength="128" id="txtUserName" tabindex="1" class="name small-txt" placeholder="Enter Email ID" />
 		                            </li>
-		                            <li><a style="width:110px; color:#fff; font-weight:bold;" class="btn login-btn" id="go" rel="leanModal" name="signup" href="#signup">Submit</a></li>
-		                            
+		                          <!--   <li><a style="width:110px; color:#fff; font-weight:bold;" class="btn login-btn" id="go" rel="leanModal" name="signup" href="#signup">Submit</a></li>
+		                            --><li> <input type="submit"  style="width:110px; color:#fff; font-weight:bold;" value="Submit" class="btn login-btn" id= "btnSubmit" TabIndex="2"/>  </li>
 		                            <li><a href="login.do" style="color:#8b8b8b;">Back to Home?</a></li>
 	                        </ul>
                             </div>

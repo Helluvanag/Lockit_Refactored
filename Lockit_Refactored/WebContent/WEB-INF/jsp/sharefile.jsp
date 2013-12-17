@@ -112,6 +112,7 @@
 			document.form2.file_txt_id.value=document.form1.fileShareid.value;
 			document.form2.file_txt_isfolder.value=document.form1.isfolder.value;
 			document.form2.file_txt_createdby.value=document.form1.FileOwnerEmaiId.value;
+			document.form2.file_txt_name.value='<%=filename%>';
 	       var f=document.form2;
          f.method="post";
       	 f.action='sharefile_folder.do';
@@ -330,9 +331,9 @@ $("#myform :input").tooltip({
           <div class="Lockit-main-content fl">
           	<div class="navigation-path fl">
             	<ul>
-                	<li><a href="#"><img src="images/navigation-path-hm-icn.png" /></a></li>
+                	<li><a href="dashboard.do"><img src="images/navigation-path-hm-icn.png" /></a></li>
                 	<li><img src="images/navigation-path-divlin-icn.png" /></li>
-                	<li><a href="#">Dashboard</a></li>
+                	<li><a href="dashboard.do">Dashboard</a></li>
                 </ul>
             </div>
           	<div class="Body-Title fl">
@@ -347,7 +348,10 @@ $("#myform :input").tooltip({
 
                 <div class="Share-doc-headng fl">Share Document</div>
 				<div style="margin-top:10px;" class="Filename-OwnerName fl shr-padding">
-					<b>File Name:</b>
+				<% if(isfolder.equals("1")){ %>
+					<b>Folder Name:</b>
+					<%}else{ %>
+					<b>File Name:</b><%} %>
 					<span id="sharelbl_filename" style="color:blue;"><%= filename %> </span>
 	         		<input type="hidden" name="FileOwnerEmaiId" id="FileOwnerEmaiId" value='<%=FileOwnerEmaiId %>'>
   			 		<input type="hidden" name="isfolder" id="isfolder" value='<%=isfolder %>'>
@@ -447,6 +451,12 @@ $("#myform :input").tooltip({
 			
 		
 		  <%  }
+		}else{			
+			%>
+			<B>No Data Found.</B>	
+			
+			<%
+			
 		}
 		}catch(Exception e){
 			
@@ -460,7 +470,7 @@ $("#myform :input").tooltip({
                     <div class="Invite-People-headng fl">Invite People</div>
                     <div class="recp-email_id fl">
                     
-                        Recepient Email ID: <input name="txt_email" type="text" id="txt_email" />
+                        Recipient Email ID: <input name="txt_email" type="text" id="txt_email" />
                     </div>
                     <!--  validation control -->
                     <div class="Filename-OwnerName fl shr-padding">
@@ -549,6 +559,7 @@ $("#myform :input").tooltip({
    <input type="hidden" name="printprop" id="printprop" value="">  
    <input type="hidden" name="sharedemailid" id="sharedemailid" value=""> 
    <input type="hidden" name="sharedfileid" id="sharedfileid" value=""> 
+   <input type="hidden" name="file_txt_name" id="file_txt_name" value=""> 
 </form>
 </body>
 </html>

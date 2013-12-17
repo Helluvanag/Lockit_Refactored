@@ -1,24 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-    <%
-    System.out.println("inside loginwithgoogle1 jsp.....");
-    %>
+   
 <!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title></title>
   <script type="text/javascript">
-  function check(){
-	 
-        var url =   window.document.URL;
-        
-        var acToken =   gup(url, 'access_token');
-        
+  function check(){	 
+        var url =   window.document.URL;        
+        var acToken =   gup(url, 'access_token');        
         document.getElementById("access_token").value = acToken ;
-       
-       
-      
 		 var f=document.form1;
   		 f.method="post";
   		 f.action='loginwithgoogle1.do'; 

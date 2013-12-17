@@ -40,6 +40,65 @@ function validate()
 	var atpos=y.indexOf("@");
 	var dotpos=y.lastIndexOf(".");
 	
+	if(x=="" && y=="" && pass=="" && con_pass=="" )
+		{
+		
+		document.getElementById("error").innerHTML="All fields  are  mandatory.";
+	    return false;
+		
+		}
+	
+     if (y==null || y=="")
+		
+	    {
+		// alert("First name must be filled out"); 
+		document.getElementById("error").innerHTML="Email id is mandatory.";
+	    return false; 
+		
+	     }
+
+     if (atpos<1 || dotpos<atpos+2 || dotpos+2>=y.length)
+    	 
+        {
+     //alert("Not a valid e-mail address");
+     document.getElementById("error").innerHTML="Invalid email id.";
+    return false;
+         }
+     
+     if( pass==null || pass=="")
+			
+		{
+		document.getElementById("error").innerHTML=" password is mandatory.";
+		return false;
+		}
+     
+     if( con_pass==null || con_pass=="")
+			
+		{
+		document.getElementById("error").innerHTML="confirm password is mandatory.";
+		return false;
+		}
+		
+	     
+	if((pass!=con_pass || !pass)) 
+				
+		{
+			//alert("Password does not match!!! Please give correct password");
+			document.getElementById("error").innerHTML="Password do not match.";
+			return false;
+		}
+	
+	 if (pass.length < 6)
+		  
+		 {
+		 
+		      //alert("password length must be atleast 6 characters");
+		   document.getElementById("error").innerHTML="Password length must be atleast 6 characters.";
+		   return false;
+		  
+		 }
+	
+    
 	if (x==null || x=="")
 		
 		{
@@ -47,46 +106,13 @@ function validate()
 			document.getElementById("error").innerHTML="Display name is mandatory.";
 		    return false;
 		    
-			
 		}
-	if (y==null || y=="")
+	
 		
-	{
-		// alert("First name must be filled out"); 
-		document.getElementById("error").innerHTML="Email id is mandatory.";
-	    return false;
-	    
+	
 		
-	}
-		if (atpos<1 || dotpos<atpos+2 || dotpos+2>=y.length)
-	{
-		//alert("Not a valid e-mail address");
-		document.getElementById("error").innerHTML="Invalid email id.";
-		return false;
-	}
-		if (pass==null || pass=="" || con_pass==null || con_pass=="")
-			
-		{
-			// alert("First name must be filled out"); 
-			document.getElementById("error").innerHTML="Display name is mandatory.";
-		    return false;
-		    
-			
-		}
-	     
-			if((pass!=con_pass || !pass)) 
-				
-			 {
-			//alert("Password does not match!!! Please give correct password");
-			document.getElementById("error").innerHTML="Password do not match.";
-			return false;
-			}
-			 if (pass.length < 6)
-		      {
-		      //alert("password length must be atleast 6 characters");
-		      document.getElementById("error").innerHTML="Password length must be atleast 6 characters.";
-		   return false;
-		      }
+		
+     
 }
 </script>
 
@@ -140,10 +166,10 @@ function validate()
 		                            	<input  type="text"  name="displayname" class="name small-txt" placeholder="Display Name"/>
 		                            </li>
 		                            <li>
-		                            	<input style="width:110px; color:#fff; font-weight:bold;" type="submit" value="Sign up" class="btn login-btn"  >
+		                            	<input style="width:110px; color:#fff; font-weight:bold;" type="submit" value="Sign Up" class="btn login-btn"  >
 		                            </li>
 		                            <li>
-		                            	Already a User? <a style="color:#f40101;" id="HyperLink2" href="login.do">Sign in Here</a>
+		                            	Already a User? <a style="color:#f40101;" id="HyperLink2" href="login.do">Sign In Here</a>
 		                            </li>
 	                        </ul>
                             </div>

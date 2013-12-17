@@ -948,46 +948,7 @@ public class DashboardServiceImpl implements DashboardService {
 		 				}
 	 			}
 	 
-	 /*@Override
-		public boolean shareFile(HttpServletRequest request,String logged_user_mail, String strEmailID,
-				String fileid, int Days, int Hours, int Minutes, String download, String share, String print, String isfolder) {
-				
-		 		final Calendar cal = Calendar.getInstance();
-				DateFormat newFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
-				String createdDate=newFormat.format(cal.getTime());
-			 
-				String sharedTime=newFormat.format(cal.getTime());
-	    if (Days == 0 && Hours == 0  && Minutes == 0)
-	     {
-	    	  expiredTime=newFormat.format(cal.getTime()); 
-	    	  logger.debug("The expiredTime in service is************"+expiredTime);
-	     }
-	     else 
-	     {  	
-	    	  	cal.add( Calendar.DATE, +Days ); 	    	 	         	
-	    	  	cal.add(Calendar.HOUR_OF_DAY, +Hours);  	         	    	  	
-	         	cal.add(Calendar.MINUTE, Minutes);
-	    	  	    	  	
-	    	  	expiredTime = newFormat.format(cal.getTime());	    	  	
-	    	  	logger.debug("The expiredTime in service is in ELSE************"+expiredTime);
-	     }
-			try{			
-					String strResult = (String) dashboardDao.usp_Insert_ShareFile(logged_user_mail,strEmailID,fileid,sharedTime,expiredTime,createdDate,download,share,print,isfolder);
-					int i = Integer.parseInt(strResult);			 	 
-			 		if(i==1)
-			 		{  
-				    	  request.setAttribute("message1", "Sharefile success.");
-				    	  return true;
-				    } 
-				    else
-				    {  
-				    	  return false;
-				    }  
-			}catch(Exception e){
-				logger.error("Error inside Dashbord share file..ServiceImpl...."+e.toString());
-				 return false;
-			}
-		}*/
+	
 	 @Override
 		public boolean shareFile(HttpServletRequest request,HttpServletResponse response,String logged_user_mail, String strEmailID,
 				String fileid, int Days, int Hours, int Minutes, String download, String share, String print, String isfolder,String filename1) {		 
@@ -1023,8 +984,8 @@ public class DashboardServiceImpl implements DashboardService {
 			 					    String host = "smtp.gmail.com";		     
 			 					    final String pwd = "keerthikeerthi";/** gmail id password***/		     
 			 					 
-			 					   String body = "Dear User,"+"\n"+logged_user_mail+ " has  shared "+filename1+"  file with you.";
-
+			 					 //  String body = "Dear User,"+"\n"+logged_user_mail+ " has  shared "+filename1+"  file with you.";
+			 					    String body = "Dear User," +"\n"+ logged_user_mail+ " has  shared "+filename1+"  file with you.Now you can login here"+"\n"+"http://defigomail.com:8082/Lockit_Refactored/login.do?UserName="+strEmailID+"";
 			 					    Properties props = new Properties();   
 			 					    props.setProperty("mail.transport.protocol", "smtp");   
 			 					    props.setProperty("mail.host", host);   
@@ -1085,49 +1046,7 @@ public class DashboardServiceImpl implements DashboardService {
 				return null;
 			}
 		}
-/*
-		@Override
-		public boolean shareFileFolder(HttpServletRequest request, String logged_user_mail, String strEmailID, String fileid,
-				int days, int hours, int minutes, String download, String share, String print, String isfolder) {
-			
-			final Calendar cal = Calendar.getInstance();
-			DateFormat newFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String createdDate=newFormat.format(cal.getTime());
-			 
-			String sharedTime=newFormat.format(cal.getTime());
-			if (days == 0 && hours == 0  && minutes == 0)
-			{
-	    	  expiredTime=newFormat.format(cal.getTime()); 
-			}
-			else 
-			{
-	    	  	cal.add( Calendar.DATE, +days ); 	    	  
-	    		         	
-	    	  	cal.add(Calendar.HOUR_OF_DAY, +hours);   
-	       	    	  	
-	         	cal.add(Calendar.MINUTE, minutes);
-	    	 	    	  	
-	    	  	expiredTime = newFormat.format(cal.getTime());	    	  	
-	    	  
-	    	 
-			}
-			try{							
-					String strResult = (String) dashboardDao.usp_Insert_ShareFolder(logged_user_mail,strEmailID,fileid,sharedTime,expiredTime,createdDate,download,share,print,isfolder);			
-					int i = Integer.parseInt(strResult);			 	 
-			 		if(i==1)
-			 		{  
-				    	  request.setAttribute("message1", "ShareFolder succuss.");
-				    	  return true;
-				    } 
-				    else
-				    {  
-				    	  return false;
-				    }  
-			}catch(Exception e){
-				logger.error("Error inside Dashbord share file..ServiceImpl...."+e.toString());
-				 return false;
-			}
-		}*/
+
 		@Override
 		public boolean shareFileFolder(HttpServletRequest request, String logged_user_mail, String strEmailID, String fileid,
 				int days, int hours, int minutes, String download, String share, String print, String isfolder,String filename1) {
@@ -1168,8 +1087,8 @@ public class DashboardServiceImpl implements DashboardService {
 			 					    String host = "smtp.gmail.com";		     
 			 					    final String pwd = "keerthikeerthi";/** gmail id password***/		     
 			 					 
-			 					   String body = "Dear User,"+"\n"+logged_user_mail+ " has  shared "+filename1+" Folder with you.";
-			 					    		
+			 					   // String body = "Dear User,"+"\n"+logged_user_mail+ " has  shared "+filename1+" Folder with you.";
+			 					    String body = "Dear User," +"\n"+ logged_user_mail+ " has  shared "+filename1+"  Folder with you. Now you can login here"+"\n"+"http://defigomail.com:8082/Lockit_Refactored/login.do?UserName="+strEmailID+"";		
 			 			
 			 					    Properties props = new Properties();   
 			 					    props.setProperty("mail.transport.protocol", "smtp");   

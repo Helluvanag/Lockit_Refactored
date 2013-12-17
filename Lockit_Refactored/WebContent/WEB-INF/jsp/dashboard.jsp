@@ -1,7 +1,7 @@
 <%@page import="com.verudix.lockit.service.DashboardServiceImpl"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="java.util.Vector"%>
+<%@page import="java.util.Vector,java.util.Collection"%>
 <%@page import="com.verudix.lockit.util.LockitConstants"%>
 <%@page import="java.io.File"%>
 <%@page import="com.verudix.lockit.flexpaperviewer.Config"%>
@@ -9,7 +9,20 @@
     pageEncoding="ISO-8859-1"%>
     
 <%
-	
+Cookie cookie = null;
+Cookie[] cookies = null;
+// Get an array of Cookies associated with this domain
+cookies = request.getCookies();
+
+if( cookies != null ){
+    
+    for (int i = 0; i < cookies.length; i++){
+       cookie = cookies[i];
+       System.out.println("Name : " + cookie.getName( ) + ",  ");
+       System.out.println("Value: " + cookie.getValue( )+" <br/>");
+    }}else{
+    	System.out.println("<h2>No cookies founds</h2>");
+          }
 	String[] strArrName = (String[])session.getAttribute("strArrName");
 	String[] strArrPath = (String[])session.getAttribute("strArrPath");
 	String[] strArrFileId = (String[])session.getAttribute("strArrFileId");
@@ -93,38 +106,6 @@
 		<link rel="stylesheet" href="Scripts/datepicker.css"/>		
 		<script src="js/jquery.min.js" type="text/javascript"></script>
 		
-		<script type="text/javascript">
- 
-  $(document).ready(function(){
-  // Write on keyup event of keyword input element
-  $("#kwd_search").keyup(function(){
-   // When value of the input is not blank
-   if( $(this).val() != "")
-   {
-    // Show only matching TR, hide rest of them
-    $("#my-table tbody>tr").hide();
-    $("#my-table td:contains-ci('" + $(this).val() + "')").parent("tr").show();
-    
-    
-   }
-   else
-   {
-    // When there is no input or clean again, show everything back
-    $("#my-table tbody>tr").show();
-   }
-  });
- });
- // jQuery expression for case-insensitive filter
- $.extend($.expr[":"], 
- {
-     "contains-ci": function(elem, i, match, array) 
-  {
-   return (elem.textContent || elem.innerText || $(elem).text() || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
-  }
- });
-  
- </script>
-		 
  		<style type="text/css">
 			.modalBackground
 			{
@@ -259,21 +240,42 @@
  
  	<script type="text/javascript">
         $(document).ready(function ()
-        {           
+        {    
+        	$("#kwd_search").keyup(function(){
+        		
+        		   // When value of the input is not blank
+        		   if( $(this).val() != "")
+        		   {
+        		    // Show only matching TR, hide rest of them
+        		    $("#my-table tbody>tr").hide();
+        		    $("#my-table td:contains-ci('" + $(this).val() + "')").parent("tr").show(); 
+        		   }
+        		   else
+        		   {
+        		    // When there is no input or clean again, show everything back
+        		    $("#my-table tbody>tr").show();
+        		   }
+        	});
+        	 $.extend($.expr[":"], 
+        			 {
+        			     "contains-ci": function(elem, i, match, array) 
+        			  {
+        			   return (elem.textContent || elem.innerText || $(elem).text() || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+        			 }
+        	});
             $("#btnShowModal_FileUpload").click(function (e)
             {
                 ShowDialog(true);
                 e.preventDefault();
             });            
-        $("#btnShowModal_FolderUpload").click(function (e)
+            $("#btnShowModal_FolderUpload").click(function (e)
                     {
                         ShowDialog1(true);
                         e.preventDefault();
                     });
 
-      	$("#btnUploadFile").click(function (e)
-            {
-      			      			
+      	   $("#btnUploadFile").click(function (e)
+            {    			
 				 var f=document.form1;
 				 f.f1fileid.value="<%=strFileId%>";
 				 f.f1filename.value="<%=strFolderName%>";
@@ -287,14 +289,14 @@
                  e.preventDefault();			
             });
             
-        $("#btnCancelFile").click(function (e)
+          $("#btnCancelFile").click(function (e)
             {        		        				
         		HideDialog();
                 e.preventDefault();
         			
             });
             
-        $("#btnUploadFolder").click(function (e)
+          $("#btnUploadFolder").click(function (e)
              {
         		var f=document.form1;
         		f.f1fileid.value="<%=strFileId%>";
@@ -308,13 +310,13 @@
                 e.preventDefault();			
              });
                     
-        $("#btnCancelFolder").click(function (e)
+          $("#btnCancelFolder").click(function (e)
               {        		        				
                 HideDialog1();
                 e.preventDefault();
                 			
              });
-        $("#btnDelFileFolder").click(function (e)
+          $("#btnDelFileFolder").click(function (e)
                 {          		
         	 	var f=document.form2;
             	f.file_id.value=str_file_id;
@@ -330,13 +332,13 @@
         	    HideDialog3();
                 e.preventDefault();
                 });
-        $("#btnCancelDelFileFolder").click(function (e)
+          $("#btnCancelDelFileFolder").click(function (e)
                 {
                      HideDialog3();
                      e.preventDefault();
                 });      
                   
-       }); 
+          }); 
         function ShowDialog(modal)
         {
             $("#overlay").show();
@@ -465,8 +467,8 @@
             f.submit();
           }
       
-		function newWindow(doc,expiryDate,strExpMsg,strPrint){
-			window.open('common/simple_document.jsp?doc='+doc+'&expiryDate='+expiryDate+'&strExpMsg='+strExpMsg+'&strPrint='+strPrint,'open_window','menubar,toolbar,location,directories,status,scrollbars,resizable,dependent,width=640,height=480,left=0,top=0');
+		function newWindow(doc){
+			window.open('common/simple_document.jsp?doc='+doc,'open_window','menubar,toolbar,location,directories,status,scrollbars,resizable,dependent,width=640,height=480,left=0,top=0');
 		}
         function getSelected(){        	
         	var sel = document.getElementById("select");
@@ -508,8 +510,12 @@
 		String strExpiry = (String)request.getAttribute("strExpiredDateTime");
 		String strPrint = (String)request.getAttribute("strPrint");
 		String strExpMsg = (String)request.getAttribute("strExpMsg");	
+		 session.setAttribute("sessiondoc", strBool);
+		 session.setAttribute("sessionexpiryDate", strExpiry);
+		 session.setAttribute("sessionstrExpMsg", strExpMsg);
+		 session.setAttribute("sessionstrPrint", strPrint); 
     %>
-<body onload="newWindow('<%= strBool%>','<%= strExpiry%>','<%= strExpMsg%>','<%= strPrint%>')" style="background:#e5e9ec;">
+<body onload="newWindow('<%= strBool%>')" style="background:#e5e9ec;">
 <%
 	}} else{
 %>
@@ -566,7 +572,7 @@
           <div class="Lockit-main-content fl">
           	<div class="navigation-path fl">
             	<ul>
-                	<li><a href="#"><img src="images/navigation-path-hm-icn.png" /></a></li>
+                	<li><a href="dashboard.do"><img src="images/navigation-path-hm-icn.png" /></a></li>
                 	<li><img src="images/navigation-path-divlin-icn.png" /></li>
                 	<li><a href="#">Dashboard</a></li>
                 </ul>
@@ -574,7 +580,7 @@
           	<div class="Body-Title fl">
 				<div class="Title fl">
                 	<a><img class="fl" src="images/Dashboard-icon.png" /></a>
-                	<h1>Dash board</h1>
+                	<h1>Dashboard</h1>
                 </div>
                 <div class="btn-search fr">
                 	<ul>
@@ -585,7 +591,7 @@
                     		<a class="login-btn" id="go" rel="leanModal" name="create" href="#create-folder"><img src="images/create-folder.png" /></a>
                     	</li>
                     	
-                    	<li><input class="name small-txt" id="kwd_search" type="text" placeholder="Search"/><button><i class="icon-search"></i></button></li>
+                    	<li><input class="name small-txt" id="kwd_search" type="text" placeholder="Search"/><!-- <button> <i class="icon-search"></i>--><!-- </button> --></li>
                     </ul>
                 </div>
             </div>
@@ -594,7 +600,7 @@
             <div class="navigation-path-main fl">
             	<ul>
             	<li><a class="tooltip-hover" href="dashboard.do"><img  id="ImageButton1" src="images/floder-icon.png" />
-            		<div class="tooltip">You Cannot share this file</div>
+            		<!-- <div class="tooltip">You Cannot share this file</div> -->
     				</a></li>
                 	<li>
 						<%    
@@ -632,7 +638,7 @@
 						<th class="img-align-left">File Name </th>
 						<th class="img-align-center">Share</th>
 						<th class="img-align-center">Download</th>
-						<th class="img-align-center"">
+						<th class="img-align-center">
 			<%
 			if(strf2path.length() == 0 || strf2path == ""){
 			%>
@@ -646,7 +652,7 @@
 			%>Owner
 			<%} %>
 						</th>
-						<th class="img-align-left">Delete</th>
+						<th class="img-align-center">Delete</th>
 					</tr></thead>
 				<tbody>
 	    <%  
@@ -854,7 +860,7 @@
 	<input type="hidden" name="owner_id" value="">
 	<input type="hidden" name="is_expiry" value="<%= strIsExpiry%>">
 	<input type="hidden" id="selection" name="selection" value="<%= dropdown%>">
-	<input type="hidden" id="f2path" name="f2path" value="<%= strf2path%>">
+	<input type="hidden" id="f2path" name="f2path" value="<%= strf2path%>" >
 
    <input type="hidden" name="file_options" id="file_options" value="">
    <input type="hidden" name="file_txt_email" id="file_txt_email" value="">

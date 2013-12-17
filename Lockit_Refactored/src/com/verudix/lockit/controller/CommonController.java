@@ -53,7 +53,7 @@ public class CommonController {
 				
 			 }else
 			 {				 
-				 messagek= "Signup Failed.";
+				 messagek= "Sign up failed.User already exists.";
 				 mav.setViewName("signup");
 				 mav.addObject("message1",messagek);
 				 return mav;

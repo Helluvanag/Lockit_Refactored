@@ -18,8 +18,8 @@ if(mydata!=null && mydata.size()>0){
 		lastname=mydata.get(0).get("LastName").toString();
 		displayname=mydata.get(0).get("DisplayName").toString();
 		organization=mydata.get(0).get("Organization").toString();
-		location=mydata.get(0).get("Email").toString();
-		email=mydata.get(0).get("Location").toString();
+		location=mydata.get(0).get("Location").toString();
+		email=mydata.get(0).get("Email").toString();
 		phone=mydata.get(0).get("Mobile").toString();
 		mobile=mydata.get(0).get("OfficePhone").toString();
 		Photourl=mydata.get(0).get("PhotoUrl").toString();
@@ -34,61 +34,90 @@ if(mydata!=null && mydata.size()>0){
         <meta charset="utf-8" />
         <title>Lockit : User Profile</title>
         <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-        
         <!--  new css -->
         <link href="css/inner.css" rel="stylesheet" type="text/css" />
-        
-
-        <link rel="stylesheet" href="css/elusive/css/elusive-webfont.css" />
+       <link rel="stylesheet" href="css/elusive/css/elusive-webfont.css" />
         <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,300&amp;subset=latin,latin-ext' rel='stylesheet'>
         <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' />          
         <link href="assets/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css"/>
-
+        <script  src="Scripts/prototype-1.js"  type="text/javascript"></script>
+		<script src="Scripts/prototype-base-extensions.js"  type="text/javascript"></script>
+		<script  src="Scripts/prototype-date-extensions.js"  type="text/javascript"></script>
+		<script src="Scripts/behaviour.js"  type="text/javascript"></script>
+		<script src="Scripts/datepicker.js"  type="text/javascript"></script>
+        <script  src="Scripts/behaviors.js"  type="text/javascript"></script>		
+		<link rel="stylesheet" href="Scripts/datepicker.css"/>		
+		<script src="js/jquery.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-/* 	function updateprofile(){
-		var email = document.getElementById("email");
-		var fname = document.getElementById("fname");
-		var lname = document.getElementById("lname");
-		var dname = document.getElementById("dname");
-		var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-		
-		if((fname.value).length==0){
-		
-			 var msg= "Please Enter Your First Name..";
-			// document.getElementById("L_Message").innerHTML=msg;
-			//alert("Please Enter Your First Name.");
-         
-		}else if((lname.value).length==0){
-			//alert("Please Enter Your Last Name.");
+function checkEmail(email) {
+	var email=document.forms["form1"]["email"].value;
+	var reg = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+	if (reg.test(email)){
 	
-		}else if((dname.value).length==0){
-			//alert("Please Enter Your Display Name.");
+	return true;
+	}    
+	return false;
+	}
+
+function validate(){
+    	var x=document.forms["form1"]["mobile"].value;
+	    var y=document.forms["form1"]["officephone"].value;
+	    var email=document.forms["form1"]["email"].value;
+	    var fname=document.forms["form1"]["fname"].value;
+	    var lname=document.forms["form1"]["lname"].value;
+	    var dname=document.forms["form1"]["dname"].value;
+	    
+   if(fname!=""){
+	   if(lname!=""){
+		   if(dname!=""){
+	 if(email.length>0){
+	    if (checkEmail(email.value)==false){
+	  	  	document.getElementById("L_Message1").innerHTML="Enter Valid Email Id.";
+           return false;
+        }
+	    }
+	  	 if(fname.length==0 && lname.length==0 && dname.length==0){
+		  	document.getElementById("L_Message1").innerHTML="Enter FirstName,LastName,DisplayName.";
 			
+		}else if(dname.length==0 ){			
+		    document.getElementById("L_Message1").innerHTML="Enter DisplayName.";			
 		}
-		else if ((email.value).length>0) { 
-			if(!filter.test(email.value))
-			 { //alert("Please Enter Valid Email id.");
-			
-	        
-	         
-       			 }
-		return false;
-	} else{   var f = document.form1;
-		f.method="post";
-		f.action='updateprofile.do';
-		f.submit();}} */
-	
-		function updateprofile(){
-		    var f = document.form1;
-			f.method="post";
-			f.action='updateprofile.do';
-			f.submit();
-		}
-	
+		else if(isNaN(x)||x.indexOf(" ")!=-1 )
+	     {	    
+	        document.getElementById("L_Message1").innerHTML="Enter numeric characters for Mobile number.";
+	        document.form1.getElementById("mobile").focus();
+	    }
+		 else if(isNaN(y)||y.indexOf(" ")!=-1){		 
+		        document.getElementById("L_Message1").innerHTML="Enter numeric characters for Office phone.";
+		        document.form1.getElementById("officephone").focus();
+		}else
+	     {      var f = document.form1;
+				f.method="post";
+				f.action='updateprofile.do';
+				f.submit();
+	     } 
+			   
+		   }
+		   else{
+			 
+			   document.getElementById("L_Message1").innerHTML = "Enter DisplayName.";
+	       return false;}
+	   }else{  
+		  	  
+		   document.getElementById("L_Message1").innerHTML = "Enter LastName.";
+		       return false;}
+	   
+          }else{ 
+        	  
+                document.getElementById("L_Message1").innerHTML = "Enter First Name.";
+	           return false;}
+ }
+
+
 </script>
 </head>
 <body style="background:#e5e9ec;">
-<form action="editprofile1.do" method="post" enctype="multipart/form-data" id="form1" name="form1">
+<form  method="post"  enctype="multipart/form-data" id="form1" name="form1" ">
 
 <!-- new profile page -->
 <div id="Lockit-inner-wrapper">
@@ -101,14 +130,19 @@ if(mydata!=null && mydata.size()>0){
             	<a href="#"><img src="images/lockit-inn-logo.png" /></a>
             </div>
          	<div class="UserName-photo fr">
-            <div class="profile-pic">
-                <img  class="fl" src='<%=Photourl%>' width="60" height="60"/>
-            </div>
-          </div>   
-         
-      </div>
-    </div>
-</div>
+                <div class="profile-pic">
+                    <img  class="fl" src='<%=Photourl%>' width="60" height="60"/>
+                </div>
+                
+                <div class="user-details fl">
+                    <div class="username">
+                        <a class="txt-wt-clr" href="editprofile1.do">Welcome:&nbsp;&nbsp;<%=displayname%></a>
+                    </div>
+                </div>   
+      		</div>
+    	</div>
+	</div>
+</div>  <!--AAAAAAA DDDDDDD EEEEEE DDDDDDDD -->
 <!--Lockit-Inner-Header- Ends -->
 
 <!--Lockit-Inner-body-->
@@ -136,7 +170,7 @@ if(mydata!=null && mydata.size()>0){
             </div>
           	<div class="Body-Title fl">
 				<div class="Title fl">
-                	<a><img class="fl" src="images/Title_Help.png" /></a>
+                	<a><img class="fl" src="images/Title_Profile.png" /></a>
                 	<h1>Profile</h1>
                 </div>
             </div>
@@ -148,12 +182,12 @@ if(mydata!=null && mydata.size()>0){
 
                 <div class="profile-headng fl">Edit Profile</div>
                 <div class="lockit-data-tables wd fl"><!--lockit-data-tables -->
-                                          
+                                      <span  style="color:red"  id="L_Message1"></span>    
                                             <% 
 										String error =(String)request.getAttribute("message");
 										if (error !=null) {
 									%>
-									<div class="alert alert-error" id="L_Message"><%=error%></div>
+									<span  style="color:red" id="L_Message"><%=error%></span>
 
 										<% } %>
 										
@@ -161,14 +195,16 @@ if(mydata!=null && mydata.size()>0){
 										String success =(String)request.getAttribute("message1");
 										if (success !=null) {
 									%>
-									<div class="alert alert-success" id="L_Message"><%=success%></div>
+									<div class="alert alert-success" id="L_success"><%=success%></div>
+									
 
 										<% } %>
+										
 					<div class="form-horizontal"><!--form-horizontal -->
                         <div style="margin-top:20px;" class="control-group">
-                            <label  class="control-label">User Email Id</label>
+                            <label class="control-label">User Email Id</label>
                             <div class="controls">
-                                <input type="text" style="background-color:#EEEEEE;cursor:not-allowed" name="uname"  readonly" onfocus="blur();" value='<%=logged_user_mail%>'/>
+                                <input type="text" name="uname" readonly="readonly" onFocus="blur();" value='<%=logged_user_mail%>'/>
                             </div>
                         </div>
                         
@@ -199,31 +235,30 @@ if(mydata!=null && mydata.size()>0){
 	                            <input type="text" id="dname" name="dname" value='<%=displayname%>'/>
                              </div>
                         </div>
-                          <div class="control-group">
-                            <label class="control-label">Alternate Email Id<span class="req"></span></label>
+                         <div class="control-group">
+                            <label class="control-label">Alternate Email Id</label>
                             <div class="controls">
-	                            <input type="text" id = "email" name="email" value='<%=location%>'/>
+	                            <input type="text" id = "email" name="email" value='<%=email%>'/>
+                             </div>
+                        </div>
+                 
+                        <div class="control-group">
+                            <label class="control-label">Organization</label>
+                            <div class="controls">
+	                            <input type="text" name="organization" value='<%=organization%>' />
                              </div>
                         </div>
                         
                         <div class="control-group">
-                            <label class="control-label">Organization</label>
-                            <div class="controls">
-	                            <input id="T_Organization" type="text" maxlength="64" value="" name="T_Organization">
-                             </div>
-                        </div>
-                         
-                        <div class="control-group">
                             <label class="control-label">Location</label>
                             <div class="controls">
-	                            <input id="T_Location" type="text" maxlength="64" value="" name="T_Location">
+	                            <input type="text" name="location" value='<%=location%>' />
                              </div>
                         </div>
-                         
                       <div class="control-group">
                             <label class="control-label">Mobile</label>
                             <div class="controls">
-	                            <input type="text" name="mobile" value='<%=mobile%>' />
+	                            <input type="text" name="mobile" value='<%=mobile%>' maxlength="12"  />
                              </div>
                         </div>
                         
@@ -232,7 +267,7 @@ if(mydata!=null && mydata.size()>0){
                             	Office Phone
                             </label>
                             <div class="controls">
-	                            <input type="text" name="officephone" value='<%=phone%>' />
+	                            <input type="text" name="officephone" value='<%=phone%>' maxlength="12"  />
                              </div>
                         </div>
                         
@@ -246,19 +281,16 @@ if(mydata!=null && mydata.size()>0){
                                <input type="file" name="Choose File" />
                             </div>
                         </div>
-                        
-                        
+   
                         <div class="control-group">
                             <div class="controls">
-                                <input type="submit" name="update" value="Update"  class="btn btn-primary" id="Btn_BasicInfoUpdate"  onclick="updateprofile();"/>
+                                <input type="button" name="update" value="Update"  class="btn btn-primary" id="Btn_BasicInfoUpdate" onClick="return validate()" />
                             </div>
                         </div>
 					</div><!--form-horizontal ENDS -->
                     
                 </div><!--lockit-data-tables ENDS -->
-
-                
-            </div>
+              </div>
 			 	</div>
             <!--  end table data -->
           </div>
@@ -277,8 +309,7 @@ if(mydata!=null && mydata.size()>0){
 </div>
 <!--Lockit-Inner-footer- Ends -->
 
-</div>	
-
+</div>  <!--AAAAAAA DDDDDDD EEEEEE DDDDDDDD -->
 <!-- end profile page-->
 
 </form>

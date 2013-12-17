@@ -36,7 +36,7 @@ import com.verudix.lockit.service.ProfileService;
 public class ProfileController {
 	private ProfileService profileService;
 	private DashboardService dashboardService;
-	String frstname="",lstname="";
+	String frstname="",lstname="";;
 	
 	String organization="";
 	String location="";
@@ -82,140 +82,140 @@ public class ProfileController {
 	}
 	
 	// Editing & Update Profile Details
-	@RequestMapping("/updateprofile.do")
-	public ModelAndView updateProfile(HttpServletRequest request, HttpServletResponse response,@ModelAttribute("user_mail") String user_mail,final RedirectAttributes redirectAttributes) throws Exception{ 
-		         logger.debug("Inside ProfileController------");	 
-	           try{		 
-	        	   HttpSession session = request.getSession(true);
-	        	   boolean status=false;
-	        
-	        		String rootpath="",strFileName;
-	        		int maxSize =  2 * 1024 * 1024; //equals to 2MB
-	        		int filesize = 0;
-	     
-	        	   List<FileItem> multiparts = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
-	        	   for(FileItem item : multiparts){
-	        		   if(item.isFormField()){       	
-	        			   name = item.getFieldName();
-	        			   value    =item.getString();       	         
-	        			   if(name.equals("fname"))                    
-	        			   {       	
-	        				   frstname=value;
-	        			   }else if(name.equals("lname"))
-	        			   {
-	        				   lstname=value;       	
-	        			   }else if(name.equals("email"))
-	        			   {
-	        				   mail=value;       	
-	        			   }else if(name.equals("organization"))
-	        			   {
-	        				   organization=value;       	
-	        			   }else if(name.equals("location"))
-	        			   {
-	        				   location=value;       	
-	        			   }else if(name.equals("mobile"))
-	        			   {
-	        				   mobile=value;       	
-	        				   logger.debug("Entered Mobile:"+mobile);       	
-	        			   }else if(name.equals("officephone"))
-	        			   {
-	        				   phone=value;       	
-	        			   }else if(name.equals("dname"))
-	        			   {
-	        				   display=value;
-	        				   logger.debug("Entered DisplayName value:"+display);
-	        			   }       
-	        		   }else{
-	        			  
-	        			   try{
-	          				   imageName = new File(item.getName()).getName();
-	               			   String[] imageExtensions = new String[] {  ".bmp", ".gif", ".png", ".jpg", ".jpeg" };
-	               			   filesize = (int) item.getSize();
-	               			   strFileName = "img_" + Calendar.getInstance().getTimeInMillis() + imageName;
-	               			   String Extension = imageName.substring(imageName.lastIndexOf('.')).toLowerCase();
-	               		       String ext = Extension.substring(1,Extension.length());
-	               			   logger.debug("file Extension.."+Extension);
-	               		   	  for(int i=0;i<imageExtensions.length;i++){
-	               				   if(imageExtensions[i].equals(Extension))
-	               				   {
-	               			  		  rootpath =  request.getServletContext().getRealPath("/");
-	               					  File dir = new File(rootpath);
-	               					  if(!dir.exists()){
-	               						  dir.mkdir();
-	               					  }
-	                       			photourl = dir +File.separator+"Images" + File.separator + strFileName;
-	                       			BufferedImage bi = ImageIO.read(item.getInputStream()); 
-	                       			Image img = bi.getScaledInstance(60,60,Image.SCALE_SMOOTH);
-	                       			int w = img.getWidth(null);
-	                       			int h = img.getHeight(null);  
-	                       			BufferedImage scaled = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);       
-	                       			Graphics2D g = scaled.createGraphics();
-	                       			g.drawImage(img,0,0,null); 
-	                       			if(g != null) g.dispose();
-	                       			ImageIO.write(scaled,ext, new File(photourl));
-	                       			logger.debug("actual file path"+photourl);
-	                       			status = true;
-	                       			break; }
-	               			   } }catch(Exception e){
-	               			   }    }
-	              	   }
-	        	   			Calendar dateTime=Calendar.getInstance();
-	        	   			DateFormat newFormat=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss ");
-	        	   			modifieddate=newFormat.format(dateTime.getTime());
-	        	   			if(frstname.length()>0 ){
-	        	   				if(lstname.length()>0  ){
-	        	   					if(display.length()>0 ){ 
-	        	   						if(mail.length()>0){
-	        	   						 String regEx = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}\\b";
-	        		                	  Pattern p = Pattern.compile(regEx);
-	        		                	  Matcher m = p.matcher(mail);
-	        		                	  if(m.find()) 
-	        		                	  {
-	        		                		 
-	        		                	  
-	       	   		    if(imageName==""){
-	        	   		    	String Photourl = dashboardService.GetPhotoUrl(user_mail, request.getServletContext().getRealPath("/"));
-	        	   			    String profileDetails=profileService.updateProfile(request,user_mail,frstname,lstname,mail,organization,location,mobile,phone,display,Photourl,modifieddate);
-	        	   			    redirectAttributes.addFlashAttribute("message1", " Updated successfully.");//at profile picture not selected...
-	        	   			 }else{
-	        	   			if(status==true){
-	        	   				status=false;
-	        	   		        if(maxSize >filesize)
-	        	   		        {
-	        	   		        	String profileDetails=profileService.updateProfile(request,user_mail,frstname,lstname,mail,organization,location,mobile,phone,display,photourl,modifieddate);
-	        	   		        	System.out.println("profileDetails in pc..else"+profileDetails);
-	        	   		        	redirectAttributes.addFlashAttribute("message1", "updated successfully.");
-	        	   				 }else{
-	        	   					 redirectAttributes.addFlashAttribute("message", " ImageSize Greater Than 2mb.");
-	        	   			 }
-	        	   			}else{
-	        	   				redirectAttributes.addFlashAttribute("message", " Image Format Not Supported.");
-	        	   			}
-	        	   			
-	                  }}  else
-	        		                	  {
-	        		                		  redirectAttributes.addFlashAttribute("message", "Please Enter Valid Email ID.");
-	        		                	  }
-	        		                	  
-	        	   						
-	        	   						}else{
-	        	   						redirectAttributes.addFlashAttribute("message", "Email id is Mandatory.");
-	        	   						}
-	        	   					}else{
-	        	   					 redirectAttributes.addFlashAttribute("message", "Display Name is Mandatory.");
-	        	   					}
-	        	   				}else{
-	        	   				 redirectAttributes.addFlashAttribute("message", "Last Name is Mandatory.");
-	        	   				}}
-	        	   			else{
-	        	   			 redirectAttributes.addFlashAttribute("message", "First Name is Mandatory.");
-	        	   			}
-	        	   			return new ModelAndView("redirect:editprofile1.do");
-	           	}
-	           catch(Exception error)
-	           {
-	        	   logger.debug("Catch --Profile Controller--");		 
-	        	   return new ModelAndView("redirect:editprofile1.do");	
-	           }	
-		}	
+		@RequestMapping("/updateprofile.do")
+		public ModelAndView updateProfile(HttpServletRequest request, HttpServletResponse response,@ModelAttribute("user_mail") String user_mail,final RedirectAttributes redirectAttributes) throws Exception{ 
+			         logger.debug("Inside ProfileController------");	 
+		           try{		 
+		        	   HttpSession session = request.getSession(true);
+		        	   boolean status=false;
+		        
+		        		String rootpath="",strFileName;
+		        		int maxSize =  2 * 1024 * 1024; //equals to 2MB
+		        		int filesize = 0;
+		     
+		        	   List<FileItem> multiparts = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
+		        	   for(FileItem item : multiparts){
+		        		   if(item.isFormField()){       	
+		        			   name = item.getFieldName();
+		        			   value    =item.getString();       	         
+		        			   if(name.equals("fname"))                    
+		        			   {       	
+		        				   frstname=value;
+		        			   }else if(name.equals("lname"))
+		        			   {
+		        				   lstname=value;       	
+		        			   }else if(name.equals("email"))
+		        			   {
+		        				   mail=value;       	
+		        			   }else if(name.equals("organization"))
+		        			   {
+		        				   organization=value;       	
+		        			   }else if(name.equals("location"))
+		        			   {
+		        				   location=value;       	
+		        			   }else if(name.equals("mobile"))
+		        			   {
+		        				   mobile=value;       	
+		        				   logger.debug("Entered Mobile:"+mobile);       	
+		        			   }else if(name.equals("officephone"))
+		        			   {
+		        				   phone=value;       	
+		        			   }else if(name.equals("dname"))
+		        			   {
+		        				   display=value;
+		        				   logger.debug("Entered DisplayName value:"+display);
+		        			   }       
+		        		   }else{
+		        			  
+		        			   try{
+		          				   imageName = new File(item.getName()).getName();
+		               			   String[] imageExtensions = new String[] {  ".bmp", ".gif", ".png", ".jpg", ".jpeg" };
+		               			   filesize = (int) item.getSize();
+		               			   strFileName = "img_" + Calendar.getInstance().getTimeInMillis() + imageName;
+		               			   String Extension = imageName.substring(imageName.lastIndexOf('.')).toLowerCase();
+		               		       String ext = Extension.substring(1,Extension.length());
+		               			   logger.debug("file Extension.."+Extension);
+		               		   	  for(int i=0;i<imageExtensions.length;i++){
+		               				   if(imageExtensions[i].equals(Extension))
+		               				   {
+		               			  		  rootpath =  request.getServletContext().getRealPath("/");
+		               					  File dir = new File(rootpath);
+		               					  if(!dir.exists()){
+		               						  dir.mkdir();
+		               					  }
+		                       			photourl = dir +File.separator+"Images" + File.separator + strFileName;
+		                       			BufferedImage bi = ImageIO.read(item.getInputStream()); 
+		                       			Image img = bi.getScaledInstance(60,60,Image.SCALE_SMOOTH);
+		                       			int w = img.getWidth(null);
+		                       			int h = img.getHeight(null);  
+		                       			BufferedImage scaled = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);       
+		                       			Graphics2D g = scaled.createGraphics();
+		                       			g.drawImage(img,0,0,null); 
+		                       			if(g != null) g.dispose();
+		                       			ImageIO.write(scaled,ext, new File(photourl));
+		                       			logger.debug("actual file path"+photourl);
+		                       			status = true;
+		                       			break; }
+		               			   } }catch(Exception e){
+		               			   }    }
+		              	   }
+		        	   			Calendar dateTime=Calendar.getInstance();
+		        	   			DateFormat newFormat=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss ");
+		        	   			modifieddate=newFormat.format(dateTime.getTime());
+		        	   			/*if(frstname.length()>0 ){
+		        	   				if(lstname.length()>0  ){
+		        	   					if(display.length()>0 ){ */
+		        	   						/*if(mail.length()>0){
+		        	   						 String regEx = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}\\b";
+		        		                	  Pattern p = Pattern.compile(regEx);
+		        		                	  Matcher m = p.matcher(mail);
+		        		                	  if(m.find()) 
+		        		                	  {*/
+		        		                		 
+		        		                	  
+		       	   		    if(imageName==""){
+		        	   		    	String Photourl = dashboardService.GetPhotoUrl(user_mail, request.getServletContext().getRealPath("/"));
+		        	   			    String profileDetails=profileService.updateProfile(request,user_mail,frstname,lstname,mail,organization,location,mobile,phone,display,Photourl,modifieddate);
+		        	   			    redirectAttributes.addFlashAttribute("message1", " Updated successfully.");//at profile picture not selected...
+		        	   			 }else{
+		        	   			if(status==true){
+		        	   				status=false;
+		        	   		        if(maxSize >filesize)
+		        	   		        {
+		        	   		        	String profileDetails=profileService.updateProfile(request,user_mail,frstname,lstname,mail,organization,location,mobile,phone,display,photourl,modifieddate);
+		        	   		        	System.out.println("profileDetails in pc..else"+profileDetails);
+		        	   		        	redirectAttributes.addFlashAttribute("message1", "updated successfully.");
+		        	   				 }else{
+		        	   					 redirectAttributes.addFlashAttribute("message", " ImageSize Greater Than 2mb.");
+		        	   			 }
+		        	   			}else{
+		        	   				redirectAttributes.addFlashAttribute("message", " Image Format Not Supported.");
+		        	   			}
+		        	   			
+		                  }/*}  else
+		        		                	  {
+		        		                		  redirectAttributes.addFlashAttribute("message", "Please Enter Valid Email ID.");
+		        		                	  }
+		        		                	  
+		        	   						
+		        	   						}else{
+		        	   						redirectAttributes.addFlashAttribute("message", "Email id is Mandatory.");
+		        	   						}*/
+		        	   					/*}else{
+		        	   					 redirectAttributes.addFlashAttribute("message", "Display Name is Mandatory.");
+		        	   					}
+		        	   				}else{
+		        	   				 redirectAttributes.addFlashAttribute("message", "Last Name is Mandatory.");
+		        	   				}}
+		        	   			else{
+		        	   			 redirectAttributes.addFlashAttribute("message", "First Name is Mandatory.");
+		        	   			}
+	*/	        	   			return new ModelAndView("redirect:editprofile1.do");
+		           	}
+		           catch(Exception error)
+		           {
+		        	   logger.debug("Catch --Profile Controller--");		 
+		        	   return new ModelAndView("redirect:editprofile1.do");	
+		           }	
+			}	
 }

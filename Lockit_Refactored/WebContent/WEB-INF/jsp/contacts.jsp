@@ -162,7 +162,7 @@
        
     </style>
     
-
+	
 	<script type="text/javascript">
 
 	function editContact(id,email,firstname,lastname){
@@ -170,44 +170,41 @@
 		contactid = id;
     	document.getElementById("txt_EmailEdit").value= email;
     	document.getElementById("txt_FirstnameEdit").value= firstname;
-    	document.getElementById("txt_LastnameEdit").value= lastname;
-    	
+    	document.getElementById("txt_LastnameEdit").value= lastname;    	
 		ShowDialog2(true);
 	}
 	
-	function deleteContact(id){
-		
+	function deleteContact(id){		
     	 contactid = id;
     	 ShowDialog1(true);
 	}
 	
 	function deleteSelectedContacts(){		
-	
 		var message = "";
-			  /* //For each checkbox see if it has been checked, record the value.
-			   for (var i = 0; i < $(".chkheader_editgroup").length; i++)
-			   {					   
-			      if ($(".chkheader_editgroup")[i].checked){			    	 
-			         message = message + $(".chkheader_editgroup")[i].value + ","
-			      }
-			   }			  
-			 			 
-			 if(message.length>0){				 
+		   //For each checkbox see if it has been checked, record the value.
+		   for (var i = 0; i < $(".chkheader_editgroup").length; i++)
+		   {					   
+		      if ($(".chkheader_editgroup")[i].checked){			    	 
+		         message = message + $(".chkheader_editgroup")[i].value + ","
+		      }
+		   }
+		   if(message.length ==0){
+			 
+			  if(document.getElementById("error-holder").innerHTML != ""){
+				  document.getElementById("error-holder").innerHTML = "";
+			  }
+			  document.getElementById("error-holder1").innerHTML = "Please select contact(s) to delete."; 
+			  return false;
+		   }else if(message.length>0){	
+			   //  document.getElementById("dele-contacts-ct").show();
+			   //  $("#dele-contacts-ct").show();
 				 document.getElementById("selectedcontact_ids").value = message;
-				 var f=document.form1;           		
-           		 var bool = confirm("Are you sure you want to delete the contacts?");
-           		 if(bool){
-           		 f.method="post";
-           		 f.action='deletecontacts.do'; 
-           		 f.submit();	
-           		 }else{
-           			 return false;
-           		 }
-			 }else{				 
-				 document.getElementById("error-holder1").innerHTML = "Please select contact(s) to delete";				 
-			 }	*/		 
+				 var f=document.form1;    
+        		 f.method="post";
+        		 f.action='deletecontacts.do'; 
+        		 f.submit();	 	 		 
 	 }
-
+	}
 	</script>
 
 	<script type="text/javascript">
@@ -230,43 +227,35 @@
 		 
 		    });
 		});
-	</script>
-
-	<script type="text/javascript">
-	
-	$(document).ready(function(){
-		// Write on keyup event of keyword input element
-		$("#kwd_search").keyup(function(){
-			// When value of the input is not blank
-			if( $(this).val() != "")
-			{
-				// Show only matching TR, hide rest of them
-				$("#my-table tbody>tr").hide();
-				$("#my-table td:contains-ci('" + $(this).val() + "')").parent("tr").show();
-			}
-			else
-			{
-				// When there is no input or clean again, show everything back
-				$("#my-table tbody>tr").show();
-			}
-		});
-	});
-	// jQuery expression for case-insensitive filter
-	$.extend($.expr[":"], 
-	{
-	    "contains-ci": function(elem, i, match, array) 
-		{
-			return (elem.textContent || elem.innerText || $(elem).text() || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
-		}
-	});
-	
-	</script>
-
+	</script>	
     <script type="text/javascript">
 
         $(document).ready(function ()
         {
-           
+        	  // Write on keyup event of keyword input element
+        	  $("#kwd_search").keyup(function(){
+        	   // When value of the input is not blank
+        	   if( $(this).val() != "")
+        	   {
+        	    // Show only matching TR, hide rest of them
+        	    $("#my-table tbody>tr").hide();
+        	    $("#my-table td:contains-ci('" + $(this).val() + "')").parent("tr").show(); 
+        	   }
+        	   else
+        	   {
+        	    // When there is no input or clean again, show everything back
+        	    $("#my-table tbody>tr").show();
+        	   }
+        	  });
+        //	 });
+        	 // jQuery expression for case-insensitive filter
+        	 $.extend($.expr[":"], 
+        	 {
+        	     "contains-ci": function(elem, i, match, array) 
+        	  {
+        	   return (elem.textContent || elem.innerText || $(elem).text() || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+        	  }
+        	 });
             $("#btnShowModal").click(function (e)
             {
                 ShowDialog(true);
@@ -344,18 +333,22 @@
                  HideDialog1();
                  e.preventDefault();
             });
-            $("#btnDelContacts").click(function (e)
-              {              
-            	var message = "";
+           /*  $("#btnDelContacts").click(function (e)
+              { 
+            	 var message = "";
  			   //For each checkbox see if it has been checked, record the value.
  			   for (var i = 0; i < $(".chkheader_editgroup").length; i++)
  			   {					   
  			      if ($(".chkheader_editgroup")[i].checked){			    	 
  			         message = message + $(".chkheader_editgroup")[i].value + ","
  			      }
- 			   } 
- 			 		 
- 			 if(message.length>0){				 
+ 			   }
+ 			   if(message.length ==0){
+ 				   alert("Hi");
+ 				  document.getElementById("error-holder1").innerHTML = "Please select contact(s) to delete."; 
+ 				  return false;
+ 			   } 			 		 
+ 			   else if(message.length>0){				 
  				 document.getElementById("selectedcontact_ids").value = message;
  					 var f=document.form1;    
             		 f.method="post";
@@ -369,7 +362,7 @@
  		        e.preventDefault();                
  			 }			 
                     	
-              });
+              }); */
              $("#btnCancelDelContacts").click(function (e)
                     {
                          HideDialog3();
@@ -564,9 +557,9 @@
           <div class="Lockit-main-content fl">
           	<div class="navigation-path fl">
             	<ul>
-                	<li><a href="#"><img src="images/navigation-path-hm-icn.png" /></a></li>
+                	<li><a href="dashboard.do"><img src="images/navigation-path-hm-icn.png" /></a></li>
                 	<li><img src="images/navigation-path-divlin-icn.png" /></li>
-                	<li><a href="#">Contacts</a></li>
+                	<li><a href="contacts.do">Contacts</a></li>
                 </ul>
             </div>
           	<div class="Body-Title fl">
@@ -577,10 +570,10 @@
                 <div class="btn-search fr">
                 	<ul>
                 		<li><a class="login-btn" id="go" rel="leanModal" name="add" href="#add-contact"><img src="images/addcont-btn.png" /></a></li>
-                    	<li><a class="login-btn" id="go" rel="leanModal" name="dele" href="#dele-contacts"><img src="images/deletecont-btn.png" /></a></li>
+                    	<li><a class="login-btn" id="go" rel="leanModal" name="dele" onclick="deleteSelectedContacts();"><img src="images/deletecont-btn.png" /></a></li>
                     	<li><input class="name small-txt" type="text" id="kwd_search" value=""  placeholder="Search"/>
-                                <button><i class="icon-search"></i>
-                                    </button>
+                                <!-- <button> <i class="icon-search"></i>-->
+                                    <!-- </button> -->
                         </li>
                     </ul>
                 </div>
@@ -596,12 +589,7 @@
 									%>
 										<span id="error-holder" style="color:red;"><%=error%></span>
 
-									<% 
-									}
-									%>
-									
-									<%
-								%>	
+									<% 	}%>
 					</div>
 			 	
 			 		<div class="row-fluid">        
@@ -623,7 +611,7 @@
 													    	<th class="img-align-left">Name</th>
 													    	<th class="img-align-left">Email</th>
 													    	<th class="img-align-left">Edit</th>
-															<th class="img-align-left">Delete</th>
+															<th class="img-align-center">Delete</th>
 														</tr>
 													</thead>
 													<tbody>
@@ -641,12 +629,15 @@
 												    				<td><%=con_data.get(i).get("email")%></td>
 												    				<td>
 												    				<a id="go" rel="leanModal" name="update" href="#update-contact" onclick="editContact('<%=con_data.get(i).get("id")%>','<%=con_data.get(i).get("email")%>','<%=con_data.get(i).get("firstname")%>','<%=con_data.get(i).get("lastname")%>');"><img src="images/edit.png" /></a></td>
-												    				<td>
+												    				<td class="img-align-center">
 												    				<a id="go" rel="leanModal" name="del" href="#del-contact" onclick="deleteContact('<%=con_data.get(i).get("id")%>');"><img src="images/del.png" /></a></td>
 												    		  </tr>
 												    		<%
 												             }
-												            }
+												            }else{         
+												                %>
+												                <B>No Data Found.</B>	
+												                <%}
 	                                                   }catch(Exception e){                                                	   
 	                                                	   System.out.println("Error in displaying contacts in jsp...."+e.toString());
 	                                                   }
@@ -771,7 +762,7 @@
 				<div>
 					<input type="hidden" name="deletecontactid" value="" id="deletecontactid"/>
               		<input type="hidden" name="selectedcontact_ids" value="" id="selectedcontact_ids"/>
-              <!-- Adding Venu -->	<input type="hidden" name="groupid" value="" id="gruopid"/>
+             
 				</div>
 				<div class="btn-fld">
 					 <input type="submit" name="btnDelContacts" value="Yes" id="btnDelContacts" class="btn btn-primary" />
@@ -795,6 +786,7 @@
 				</div>
 			</div>
 		</div>		
+		<input type="hidden" name="selectedcontact_ids" value="" id="selectedcontact_ids"/>
 </form>
 </body>
 </html>

@@ -54,10 +54,10 @@ function login() {
     var OAUTHURL    =   'https://accounts.google.com/o/oauth2/auth?';
     var VALIDURL    =   'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=';
     var SCOPE       =   'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email';
-    /* var CLIENTID    =   '692423742708.apps.googleusercontent.com';
+  /*   var CLIENTID    =   '692423742708.apps.googleusercontent.com';
     var REDIRECT    =   'http://defigomail.com:8082/Lockit_Refactored/loginwithgoogle.do'; */
-    var CLIENTID    = '20554614860.apps.googleusercontent.com';
-    var REDIRECT    ='http://localhost:8080/Lockit_Refactored/loginwithgoogle.do';
+    var CLIENTID    =   '20554614860.apps.googleusercontent.com';
+    var REDIRECT    =   'http://localhost:8080/Lockit_Refactored/loginwithgoogle.do';
     var TYPE        =   'token';
     var _url        =   OAUTHURL + 'scope=' + SCOPE + '&client_id=' + CLIENTID + '&redirect_uri=' + REDIRECT + '&response_type=' + TYPE;
  
@@ -70,6 +70,10 @@ function login() {
 </head>
 
 <body>
+<%
+	String strUser =  request.getParameter("UserName");
+	System.out.println("The strUser is : "+ strUser);
+%>
  <script type="text/javascript" lang="javascript">
 
 
@@ -130,7 +134,11 @@ function login() {
                             	<!--  validation msgs end -->
                                 <ul>
 		                            <li>
-		                            	<input type="text"  name="email" id="email" class="name small-txt" placeholder="Email ID"/>
+		                            <% if(strUser != null){%>
+		                            	<input type="text"  name="email" id="email" class="name small-txt" placeholder="Email ID" value ="<%=strUser%>"/>
+		                            	<%}else{ %>
+		                            	<input type="text"  name="email" id="email" class="name small-txt" placeholder="Email ID" value =""/>
+		                            	<% }%>
 		                            </li>
 		                            <li>
 		                            	<input  type="password"  name="password" id="password" class="name small-txt" placeholder="Password"/>
@@ -139,7 +147,7 @@ function login() {
 		                            	<input style="width:110px; color:#fff; font-weight:bold;" type="submit" value="Sign In" class="btn login-btn" onclick="return(validate());">
 		                            </li>
 		                            <li><a style="color:#8b8b8b;" href="loadforgotpwd.do">Forgot Password?</a></li>
-		                            <li style="margin:0px;">Not registered?  <a style="color:#f40101;" href="loadsignup.do">Sign up here </a></li>
+		                            <li style="margin:0px;">Not registered?  <a style="color:#f40101;" href="loadsignup.do">Sign Up Here </a></li>
 	                        </ul>
                             </div>
                             <div class="login-with-google fl">

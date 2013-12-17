@@ -89,6 +89,10 @@ body{ background:url(../images/body-repeat-bg.png) repeat-x; font-family: 'Robot
 		background:url(../images/nav-password-ic.png) no-repeat;
 		background-position:33px 15px;	}
 		
+	.Lockit-Side-Navi li+li+li+li+li+li+li{
+		background:url(../images/nav-Logout-ic.png) no-repeat;
+		background-position:33px 15px;	}
+		
 	.Lockit-Side-Navi li a{	color:#252525;	}
 
 	.Lockit-Side-Navi li a:hover{color:#d90000;}
@@ -262,7 +266,7 @@ body{ background:url(../images/body-repeat-bg.png) repeat-x; font-family: 'Robot
 		
 	.Days,.Hrs,.Mins{ margin-right:10px;}
 	
-	textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"],        inp    ut[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+	textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"],input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
 		background-color:;
 		border: 1px solid #bebcbd;
 		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
@@ -276,7 +280,8 @@ body{ background:url(../images/body-repeat-bg.png) repeat-x; font-family: 'Robot
 	    color: #FFFFFF;
 	    font-family: 'Roboto',sans-serif;
 	    margin: 10px 0;
-	    padding: 8px 30px; }
+	    padding: 8px 30px;
+	    cursor: pointer; }
 
 .dropdown-grid {
 	padding:3px;
