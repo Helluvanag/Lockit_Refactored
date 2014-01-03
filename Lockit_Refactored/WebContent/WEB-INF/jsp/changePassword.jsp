@@ -51,27 +51,31 @@ width:600px;
 
 
 <script type="text/javascript" lang="javascript">
- function validate()
+/*   function validate()
 {
 		
 	if (document.form1.oldpwd.value =="" && document.form1.newpwd.value =="" && document.form1.newconfirmpwd.value ==""){		
 	//	alert("All Fields Are Mandatory!");
+	 
 		document.getElementById("error-holder").innerHTML = "All Fields Are Mandatory.";
 		document.form1.oldpwd.focus();
 		return false;
 	 }else if (document.form1.newpwd.value ==""){
 		//    alert("New Password is Mandatory!");	
+	
 		    document.getElementById("error-holder").innerHTML = "New Password is Mandatory.";
 			document.form1.newpwd.focus();
 			return false;
 		 }
 	else if (document.form1.newconfirmpwd.value ==""){
 	//	 alert("Confirm Password is Mandatory!");	
+	
 		 document.getElementById("error-holder").innerHTML = "Confirm Password is Mandatory.";
 		document.form1.newconfirmpwd.focus();
 		return false;
 	 }else if (document.form1.newpwd.value!==document.form1.newconfirmpwd.value ){
 	//	 alert("Passwords Mismatched!");	
+	
 		 document.getElementById("error-holder").innerHTML = "Passwords Mismatched.";
 		 document.form1.newconfirmpwd.value="";
 			document.form1.newpwd.value=""; 
@@ -79,10 +83,12 @@ width:600px;
 			return false;
 	 }else if(document.form1.newpwd.value.length<6) {
 	//   alert("Password length must be atleast 6 characters!");
+
 	   document.getElementById("error-holder").innerHTML = "Password length must be atleast 6 characters.";
 	   return false;
 	  }else if(document.form1.oldpwd.value =="" ) {
 	//	   alert("Old Password is Mandatory!");
+
 		   document.getElementById("error-holder").innerHTML = "Old Password is Mandatory.";	
 		   document.form1.oldpwd.focus();
 		   return false;
@@ -93,7 +99,16 @@ width:600px;
     	 f.submit();
 	}
 
-} 
+}
+  
+ */  
+ function validate()
+ {
+ var f=document.form1;
+	 f.method="post";
+	 f.action='changePassword.do';
+	 f.submit();
+ }
 </script>
 
 </head>
@@ -158,22 +173,19 @@ width:600px;
 			 	<div class="lockit-data-tables wd fl">
 			 	<span style="color:red" id="error-holder"></span>
 			 		                    
-                                        <%  String msg= (String)request.getAttribute("message") ;
-                                        
-                                        if(msg!=null){
-                                        	  %>                            
-                                        	  <span style="color:red" id="error-holder"><%= msg %></span>            	
-                                        <% } %>
-                                      
-                                       <% 
-										String success =(String)request.getAttribute("message1");
-										if (success !=null) {
-									%>
-									<div class="alert alert-success" ><%=success%></div>
+                                  <% 
+                                  		String msg = (String)request.getAttribute("message") ; 
+                                  if(msg != null){
+                                        if(msg == "Password changed successfully."){                                        	
+                                         %>                                      	                        
+                                        	<div class="alert alert-success" id="error-holder"><%=msg%></div>           	
+                                        <% } else{                                   
+                                        %>
+                                        <div class="alert alert-error" id="error-holder"><%= msg %></div>   																	
+										
                                     
-										<% } %>
-                                   
-      
+										<% }} %>  
+				
 	            <div class="Lockit-main-content fl">
 	            	<div class="form-horizontal">
 	            	<div class="control-group">

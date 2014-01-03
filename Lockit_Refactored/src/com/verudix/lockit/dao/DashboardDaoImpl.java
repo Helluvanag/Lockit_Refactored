@@ -636,5 +636,126 @@ public class DashboardDaoImpl/* extends JdbcDaoSupport*/ implements DashboardDao
 	}
 	
 	}
+	public String usp_Select_UserPrfoile(String email) throws SQLException{
+		String strResult1 = "";
+		 Connection	con = null;
+		 CallableStatement cs = null;	
+		 ResultSet rs = null;
+		
+		try {
+			con = DataSourceUtils.getConnection(dataSource);
+			cs = con.prepareCall("{call usp_Select_UserPrfoile('" + email + "')}");;
+			cs.execute(); 	  	
+	 	  	rs = cs.getResultSet();
+	 	  	while (rs.next()) {
+            	 strResult1 = rs.getString("DisplayName");
+                 System.out.println("strResult3 in dao"+strResult1);
+	 	  	}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("error in executing cs...."+e.toString());
+		}
+		return strResult1;
+	}
+	@Override
+	public List usp_Select_Groups(String user_mail) {
+
+		Connection	con = DataSourceUtils.getConnection(dataSource);
+		List usersListGroup=new ArrayList();
+		
+		
+		try{
+			usersListGroup.clear();
+		}catch(Exception e){
+			
+		}
+		try {
+			
+			cs = con.prepareCall("{call usp_Select_Groups('" + user_mail + "')}");
+			cs.execute(); 	  	
+	 	  	rs = cs.getResultSet();
+	 	  	
+	 	  	while (rs.next()) {	 	  		 				  				 				
+	 	  		usersListGroup.add(rs.getString(3));
+				System.out.println("userList-Group:"+rs.getString(3));
+	 	  	}
+	 	  	
+	 	  	return (ArrayList) usersListGroup;
+		} catch (SQLException e) {
+			return null;
+		}finally{
+			try {
+				rs.close();
+				cs.close();
+				con.close();
+			} catch (SQLException e) {				
+				e.printStackTrace();
+			}
+		
+	}
+	
+	}
+	@Override
+	public List usp_select_UsersOfGroupByName(String user_mail, String groupName) {
+
+		Connection	con = DataSourceUtils.getConnection(dataSource);
+		List usersListGroup=new ArrayList();
+		
+		
+		try{
+			usersListGroup.clear();
+		}catch(Exception e){
+			
+		}
+		try {
+			
+			cs = con.prepareCall("{call usp_select_UsersOfGroupByName('" + user_mail + "','" + groupName + "')}");
+			cs.execute(); 	  	
+	 	  	rs = cs.getResultSet();
+	 	  	
+	 	  	while (rs.next()) {	 	  		 				  				 				
+	 	  		usersListGroup.add(rs.getString(1));
+				System.out.println("userContact's dao impl-Group:"+rs.getString(1));
+	 	  	}
+	 	  	
+	 	  	return (ArrayList) usersListGroup;
+		} catch (SQLException e) {
+			return null;
+		}finally{
+			try {
+				rs.close();
+				cs.close();
+				con.close();
+			} catch (SQLException e) {				
+				e.printStackTrace();
+			}
+		
+	}
+	
+	}
+	
+	@Override
+	public String usp_update_fileviewedproperty(String file_id, String user_mail) {
+		
+		try {
+			con = DataSourceUtils.getConnection(dataSource);
+			cs = con.prepareCall("{call usp_update_fileviewedproperty('" + user_mail + "','" + file_id + "')}");
+			cs.execute(); 	  	
+	 	  	rs = cs.getResultSet();
+	 	  	
+		} catch (SQLException e) {			
+			e.printStackTrace();
+		}finally{
+			try {
+				rs.close();
+				cs.close();
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		
+		}
+		return file_id;		
+	}
 	
 }

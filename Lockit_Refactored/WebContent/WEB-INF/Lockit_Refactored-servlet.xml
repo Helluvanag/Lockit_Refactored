@@ -22,6 +22,7 @@ xsi:schemaLocation="
      		<mvc:mapping path="/dashboard.do" />
      		<mvc:mapping path="/openFile.do" />
      		<mvc:mapping path="/openFolder.do" />
+     		<mvc:mapping path="/createFolder.do" />
      		<mvc:mapping path="/downloadFile.do" />
      		<mvc:mapping path="/deleteFile.do" />
      		<mvc:mapping path="/sharefile.do" />

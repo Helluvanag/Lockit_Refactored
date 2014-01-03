@@ -51,11 +51,13 @@ public interface DashboardService {
 			String logged_user_mail, String strEmailID, String fileid,
 			int days, int hours, int minutes, String download, String share,
 			String print, String isfolder,String filename1);
-	public boolean shareFilePropUpdate(HttpServletRequest request,
-			String logged_user_mail, String strEmailID, String fileID,
+	public boolean shareFilePropUpdate(HttpServletRequest request, String logged_user_mail, String strEmailID, String fileID,
 			String formattedDate, String download_upd, String sharing_upd,
 			String print_upd);
 	public List getExpiredDateTime(String user_mail,String fileID);
-	public ArrayList getAllUserContacts(
-			String user_mail);
+	public ArrayList getAllUserContacts(String user_mail);	
+	public ArrayList usp_Select_Groups(String user_mail);
+	public List groupUsers(HttpServletRequest request, String user_mail,String groupName);
+	public String usp_update_fileviewedproperty(HttpServletRequest request,
+			HttpServletResponse response, String file_id, String user_mail);
 }

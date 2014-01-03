@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 import com.verudix.lockit.util.FileEncryptor;
 import com.verudix.lockit.dao.UploadFileDao;
 import com.verudix.lockit.util.LockitConstants;
-
+import com.verudix.lockit.util.CreateFolders;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -94,42 +94,10 @@ public class UploadFileServiceImpl implements UploadFileService{
       				String Extension = file_name.substring(file_name.lastIndexOf('.')).toLowerCase();      
       				
       				for(int i=0;i<LockitConstants.supportedFileExtensions.length;i++){ /****** checking file extension *****/      				   
-      				  if(LockitConstants.supportedFileExtensions[i].equals(Extension)){ /**** extension matched *******/      				   												
-      					  if(!dir.exists()){
-      						   dir = new File(rootpath);/******* creating userfiles folder if not exists******/
-      						   dir.mkdir(); 
-      					   }      					
-      					 email_path = rootpath+File.separator + user_email;      					 
-      					 File f = new File(email_path);
-      					 if(!f.exists()){
-      						 File f1 = new File(email_path);/******* creating email_folder if not exists******/
-      						 f1.mkdir();
-      					 }      					  
+      				  if(LockitConstants.supportedFileExtensions[i].equals(Extension)){ /**** extension matched *******/      	
+      					CreateFolders.createRootFolders(request, user_email);//Create folders if necessary
+      					email_path = rootpath+File.separator + user_email;
       					myfiles_path = email_path+ File.separator+"My Files/"; 
-      					logger.debug("The myfiles_path is-----"+myfiles_path);
-                 		 File f2 = new File(myfiles_path);
-                 		 if(!f2.exists()){
-						   File f3 = new File(myfiles_path);/******* creating myfiles folder if not exists******/
-						   f3.mkdir();
-					   }
-                 		convertedPdf_path =  email_path+ File.separator+"convertedPdfs/";
-                 		File f4 = new File(convertedPdf_path);
-                		 if(!f4.exists()){
-						   File f5 = new File(convertedPdf_path);/******* creating convertedPdfs folder if not exists******/
-						   f5.mkdir();
-					   }
-                		 convertedSwf_path =  email_path+ File.separator+"convertedSwfs/";
-                  		File f6 = new File(convertedSwf_path);
-                 		 if(!f6.exists()){
- 						   File f7 = new File(convertedSwf_path);/******* creating convertedSwfs folder if not exists******/
- 						   f7.mkdir();
- 					   }
-                 		 sharedFiles_path =  email_path+ File.separator+"Shared Files/";
-                   		File f8 = new File(sharedFiles_path);
-                  		 if(!f8.exists()){
-  						   File f9 = new File(sharedFiles_path);/******* creating Shared Files folder if not exists******/
-  						   f9.mkdir();
-  					   }
                  	 if(strF1path.equals("null") || strF1path.equals("")){ /**** writing file to myfiles folder ****/
                  		 logger.debug("Inside strF1path = null********");
                  	
@@ -286,23 +254,9 @@ public class UploadFileServiceImpl implements UploadFileService{
 			}
 					
 					  File f1;
-					  
-					  if(!dir.exists()){
- 						   dir = new File(rootpath);/******* creating userfiles folder if not exists******/
- 						   dir.mkdir(); 
- 					   }      					
- 					 email_path = rootpath+File.separator + user_email;      					 
- 					 File f = new File(email_path);
- 					 if(!f.exists()){
- 						 File email_folder = new File(email_path);/******* creating email_folder if not exists******/
- 						email_folder.mkdir();
- 					 }      		
-      				  String newpath = rootpath+File.separator+user_email+File.separator+"My Files/";
-      				  File myFiles = new File(newpath);
-      				  if(!myFiles.exists()){
-      					  logger.debug("Inside My Files Creation*********");
-      					myFiles.mkdir();/******* creating My Files folder if not exists******/
-      				  }
+					  CreateFolders.createRootFolders(request, user_email);//Create folders if necessary
+					  String newpath = rootpath+File.separator+user_email+File.separator+"My Files/";
+					
       				  if(strF1path.equals("null") || strF1path.equals("")){
       					   folderPath = newpath + value+"\\";//+ File.separator;
       				

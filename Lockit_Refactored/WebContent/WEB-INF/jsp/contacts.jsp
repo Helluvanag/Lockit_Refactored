@@ -27,6 +27,7 @@
         <!--  new css -->
         <link href="css/inner.css" rel="stylesheet" type="text/css" />
         <link href="css/popup.css" rel="stylesheet" type="text/css" />
+        <link rel="shortcut icon" href="images/favicon1.ico" />
 
         <!-- elusive webicons -->
             <link rel="stylesheet" href="css/elusive/css/elusive-webfont.css" />
@@ -179,32 +180,7 @@
     	 ShowDialog1(true);
 	}
 	
-	function deleteSelectedContacts(){		
-		var message = "";
-		   //For each checkbox see if it has been checked, record the value.
-		   for (var i = 0; i < $(".chkheader_editgroup").length; i++)
-		   {					   
-		      if ($(".chkheader_editgroup")[i].checked){			    	 
-		         message = message + $(".chkheader_editgroup")[i].value + ","
-		      }
-		   }
-		   if(message.length ==0){
-			 
-			  if(document.getElementById("error-holder").innerHTML != ""){
-				  document.getElementById("error-holder").innerHTML = "";
-			  }
-			  document.getElementById("error-holder1").innerHTML = "Please select contact(s) to delete."; 
-			  return false;
-		   }else if(message.length>0){	
-			   //  document.getElementById("dele-contacts-ct").show();
-			   //  $("#dele-contacts-ct").show();
-				 document.getElementById("selectedcontact_ids").value = message;
-				 var f=document.form1;    
-        		 f.method="post";
-        		 f.action='deletecontacts.do'; 
-        		 f.submit();	 	 		 
-	 }
-	}
+
 	</script>
 
 	<script type="text/javascript">
@@ -333,7 +309,7 @@
                  HideDialog1();
                  e.preventDefault();
             });
-           /*  $("#btnDelContacts").click(function (e)
+            $("#btnDelContacts").click(function (e)
               { 
             	 var message = "";
  			   //For each checkbox see if it has been checked, record the value.
@@ -343,26 +319,24 @@
  			         message = message + $(".chkheader_editgroup")[i].value + ","
  			      }
  			   }
- 			   if(message.length ==0){
- 				   alert("Hi");
- 				  document.getElementById("error-holder1").innerHTML = "Please select contact(s) to delete."; 
+ 			    if(message.length ==0){ 			    		    	
+ 			    	/* if( document.getElementById("error-holder").innerHTML !== ""){
+ 			    		   document.getElementById("error-holder").style.display="none"; 			    		 
+ 			    	}	 */
+ 			      document.getElementById("error-holder1").style.display="block";
+ 				  document.getElementById("error-holder1").innerHTML = "Please select contact(s) to delete.";
+ 			   	  $("#dele-contacts").hide();
+ 				  $("#lean_overlay").hide();  		                      
  				  return false;
- 			   } 			 		 
- 			   else if(message.length>0){				 
- 				 document.getElementById("selectedcontact_ids").value = message;
+ 			   } 	 		 
+ 			   if(message.length>0){				 
+ 				 	document.getElementById("selectedcontact_ids").value = message;
  					 var f=document.form1;    
             		 f.method="post";
             		 f.action='deletecontacts.do'; 
-            		 f.submit();	
-            		
- 			 }else{	 			
- 				document.getElementById("error-holder1").innerHTML = "Please select contact(s) to delete."; 			
- 				$("#dele-contacts").hide();
- 		        $("#dele-contacts-ct").fadeOut(200);
- 		        e.preventDefault();                
- 			 }			 
-                    	
-              }); */
+            		 f.submit();	            		
+ 				 }                     	
+              }); 
              $("#btnCancelDelContacts").click(function (e)
                     {
                          HideDialog3();
@@ -570,7 +544,7 @@
                 <div class="btn-search fr">
                 	<ul>
                 		<li><a class="login-btn" id="go" rel="leanModal" name="add" href="#add-contact"><img src="images/addcont-btn.png" /></a></li>
-                    	<li><a class="login-btn" id="go" rel="leanModal" name="dele" onclick="deleteSelectedContacts();"><img src="images/deletecont-btn.png" /></a></li>
+                    	<li><a class="login-btn" id="go" rel="leanModal" name="dele" href="#dele-contacts" onclick="deleteSelectedContacts();"><img src="images/deletecont-btn.png" /></a></li>
                     	<li><input class="name small-txt" type="text" id="kwd_search" value=""  placeholder="Search"/>
                                 <!-- <button> <i class="icon-search"></i>-->
                                     <!-- </button> -->
@@ -580,7 +554,7 @@
             </div>
             
             <!-- table data -->
-        <span id="error-holder1" style="color:red;"></span>
+         <div class="alert alert-error" id="error-holder1" style="display:none"></div>
 			 	
 			 		<div class="row-fluid">         
 						<% 
@@ -592,12 +566,14 @@
 									<% 	}%>
 					</div>
 			 	
-			 		<div class="row-fluid">        
+			 	<div class="row-fluid">        
         				<% if(errmsg!=null){%>                    
-             				 <span id="error-holder"  style="color:red;"><%= errmsg %></span>
+             				 <%-- <span id="error-holder"  style="color:red;"><%= errmsg %></span> --%>
+             				  <div class="alert alert-error" id="error-holder"><%= errmsg %></div>  
        					 <%} %><br> 
        					 <% if(msg!=null){%>              
-             				 <span id="error-holder"  style="color:Blue;"><%= msg %></span>
+             				<%--  <span id="error-holder"  style="color:Blue;"><%= msg %></span> --%>
+             				<div class="alert alert-success" id="error-holder"><b><%= msg %></b></div>
        					   <%} %>                              
 					</div>
 			 	

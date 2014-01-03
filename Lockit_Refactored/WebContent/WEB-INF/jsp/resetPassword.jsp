@@ -23,33 +23,60 @@
         
         <script type="text/javascript">
         
-        function  btnReset_Click(){
-        	
-        	
-        	
+        function  btnReset_Click()
+        
+        
+        {
         	var pass=document.forms["myForm"]["password"].value;
         	var re_enterd_pass=document.forms["myForm"]["re_password"].value;
         	
+        	if(pass==""  && re_enterd_pass=="" )
+        	{
+        		document.getElementById("error-holder").innerHTML="All fields are mandatory.";
+        		return false; 
+        	}
         	
-        	if((pass!=re_enterd_pass || !pass)) 
-				
-			 {
-			alert("Password does not match!!! Please enter correct password");
-			return false;
+        	else if (pass==null || pass=="")
+        	{
+        		document.getElementById("error-holder").innerHTML="Password is mandatory.";
+        		return false; 
+        	}
+        	
+        	else if(re_enterd_pass==null || re_enterd_pass=="")
+        	{
+        		document.getElementById("error-holder").innerHTML="Re-Enter Password.";
+        		return false; 
+        	}
+        	
+        	else if((pass!=re_enterd_pass || !pass)) 
+			{
+        		
+        	document.getElementById("error-holder").innerHTML="Password does not match.";
+	 		return false; 
+	 		
 			}
         	
-        	if (pass.length < 6)
-        		{
-        		alert("password length must be atleast 6 characters");
-    			return false;
-        		}
-        	
+        	else if (pass.length < 6)
+        	{
+        		
+        		document.getElementById("error-holder").innerHTML="Password length must be atleast 6 characters.";
+    			return false; 
+    			
+        	}
+        	 else
+        	{
+        		var f = document.myForm;
+  				f.method="post";
+  				f.action='resetPassword1.do';
+  				f.submit();
+        	}
         }
      
         </script>
     </head>
     <body>
-       <form  name="myForm" action="resetPassword1.do" method="post" >
+        <form  name="myForm"  method="post"  >
+   
        <!--  new code -->
 	<div id="Lockit-wrapper">
 <div id="Lockit-header-wrapper">
@@ -80,6 +107,8 @@
 										%>
 										<span id="error-holder" style="color:red;" class="error_box"><%=message%></span>
 			          
+										<% } else{%>
+										<span id="error-holder" style="color:red;" class="error_box"></span>
 										<% } %>
                             		</li>
                             		<li>
@@ -89,7 +118,8 @@
 		                            	<input id="txtConfirmPassword" name="re_password" type="password" MaxLength="64" TabIndex="2" class="name small-txt" placeholder="Re-Enter New Password"/>
 		                            </li>
 		                            <li>
-		                            	<input style="width:145px; color:#fff; font-weight:bold;" id="btnReset" class="btn login-btn" value="Reset Password" type="submit" onclick="return btnReset_Click();" TabIndex="3" />
+		                            	<input style="width:145px; color:#fff; font-weight:bold;" id="btnReset" class="btn login-btn" value="Reset Password" type="button"  onClick=" return btnReset_Click()"; TabIndex="3" />
+		                            	<!--  onclick="return btnReset_Click();" -->
 		                            </li>
 		                            <li><a href="login.do" style="color:#8b8b8b;">Back to Home?</a></li>
 	                        </ul>

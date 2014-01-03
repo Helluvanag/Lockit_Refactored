@@ -26,7 +26,9 @@ if(mydata!=null && mydata.size()>0){
 		Photourl = Photourl.substring(Photourl.lastIndexOf("/") + 1);
 		Photourl = "images" + "/" + Photourl;} 
         session = request.getSession(true);
-	    session.setAttribute("user_name", displayname);	%>
+	    session.setAttribute("user_name", displayname);
+	    String error="";String success="";
+	    %>
     
 <!DOCTYPE html>
 <html lang="en">
@@ -60,6 +62,9 @@ function checkEmail(email) {
 	}
 
 function validate(){
+	if(document.getElementById("L_success").value!=""){
+	
+		document.getElementById("L_success").style.display="none";}
     	var x=document.forms["form1"]["mobile"].value;
 	    var y=document.forms["form1"]["officephone"].value;
 	    var email=document.forms["form1"]["email"].value;
@@ -77,10 +82,10 @@ function validate(){
         }
 	    }
 	  	 if(fname.length==0 && lname.length==0 && dname.length==0){
-		  	document.getElementById("L_Message1").innerHTML="Enter FirstName,LastName,DisplayName.";
+		  	document.getElementById("L_Message1").innerHTML="Enter First Name,Last Name,Display Name.";
 			
 		}else if(dname.length==0 ){			
-		    document.getElementById("L_Message1").innerHTML="Enter DisplayName.";			
+		    document.getElementById("L_Message1").innerHTML="Enter Display Name.";			
 		}
 		else if(isNaN(x)||x.indexOf(" ")!=-1 )
 	     {	    
@@ -100,11 +105,11 @@ function validate(){
 		   }
 		   else{
 			 
-			   document.getElementById("L_Message1").innerHTML = "Enter DisplayName.";
+			   document.getElementById("L_Message1").innerHTML = "Enter Display Name.";
 	       return false;}
 	   }else{  
 		  	  
-		   document.getElementById("L_Message1").innerHTML = "Enter LastName.";
+		   document.getElementById("L_Message1").innerHTML = "Enter Last Name.";
 		       return false;}
 	   
           }else{ 
@@ -163,7 +168,7 @@ function validate(){
           <div class="Lockit-main-content fl">
           	<div class="navigation-path fl">
             	<ul>
-                	<li><a href="#"><img src="images/navigation-path-hm-icn.png" /></a></li>
+                	<li><a href="dashboard.do"><img src="images/navigation-path-hm-icn.png" /></a></li>
                 	<li><img src="images/navigation-path-divlin-icn.png" /></li>
                 	<li><a href="#">Profile</a></li>
                 </ul>
@@ -184,7 +189,7 @@ function validate(){
                 <div class="lockit-data-tables wd fl"><!--lockit-data-tables -->
                                       <span  style="color:red"  id="L_Message1"></span>    
                                             <% 
-										String error =(String)request.getAttribute("message");
+										 error =(String)request.getAttribute("message");
 										if (error !=null) {
 									%>
 									<span  style="color:red" id="L_Message"><%=error%></span>
@@ -192,14 +197,15 @@ function validate(){
 										<% } %>
 										
 										 <% 
-										String success =(String)request.getAttribute("message1");
+										 success =(String)request.getAttribute("message1");
 										if (success !=null) {
 									%>
 									<div class="alert alert-success" id="L_success"><%=success%></div>
 									
 
-										<% } %>
-										
+										<% }else{ %>
+										<span style="color:blue" id="L_success"></span>
+										<%} %>
 					<div class="form-horizontal"><!--form-horizontal -->
                         <div style="margin-top:20px;" class="control-group">
                             <label class="control-label">User Email Id</label>

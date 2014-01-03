@@ -140,11 +140,12 @@ public class CommonDaoImpl implements CommonDao{
 			try {
 				con = DataSourceUtils.getConnection(dataSource);				
 				cs = con.prepareCall("{call usp_Forgot_PasswordKey('" + email + "','" + fpkey + "')}");
+				logger.debug(cs);
 				cs.execute(); 	  	
 		 	  	rs = cs.getResultSet();
 		 	  	while (rs.next()) {
 	            	 strResult1 = rs.getString(1);
-	                 System.out.println();
+	                 System.out.println("The result is : "+strResult1);
 		 	  	}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -210,5 +211,26 @@ public class CommonDaoImpl implements CommonDao{
 				con.close();
 			}
 			return strResult3;
+		}
+		public String usp_Select_UserPrfoile(String email) throws SQLException{
+			String strResult1 = "";
+			 Connection	con = null;
+			 CallableStatement cs = null;	
+			 ResultSet rs = null;
+			
+			try {
+				con = DataSourceUtils.getConnection(dataSource);
+				cs = con.prepareCall("{call usp_Select_UserPrfoile('" + email + "')}");;
+				cs.execute(); 	  	
+		 	  	rs = cs.getResultSet();
+		 	  	while (rs.next()) {
+	            	 strResult1 = rs.getString("DisplayName");
+	                 System.out.println("strResult3 in dao"+strResult1);
+		 	  	}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("error in executing cs...."+e.toString());
+			}
+			return strResult1;
 		}
 }

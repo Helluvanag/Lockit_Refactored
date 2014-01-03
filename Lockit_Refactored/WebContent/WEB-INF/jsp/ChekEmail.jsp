@@ -15,7 +15,7 @@
 
         <!-- elusive webicons -->
             <link rel="stylesheet" href="css/elusive/css/elusive-webfont.css" />
-            
+            <link rel="shortcut icon" href="images/favicon1.ico">
         <!-- custom fonts -->
             <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,300&amp;subset=latin,latin-ext' rel='stylesheet' />
             <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' />

@@ -13,6 +13,27 @@ public class DashboardForm {
 	private String owner_id;
 	private String is_expiry;
 	private String cntInc;
+	private String folderId;
+	private String folderName;
+	private String folderExpiry;
+	public String getFolderExpiry() {
+		return folderExpiry;
+	}
+	public void setFolderExpiry(String folderExpiry) {
+		this.folderExpiry = folderExpiry;
+	}
+	public String getFolderId() {
+		return folderId;
+	}
+	public void setFolderId(String folderId) {
+		this.folderId = folderId;
+	}
+	public String getFolderName() {
+		return folderName;
+	}
+	public void setFolderName(String folderName) {
+		this.folderName = folderName;
+	}
 	public String getCntInc() {
 		return cntInc;
 	}

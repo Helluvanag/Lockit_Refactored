@@ -9,20 +9,7 @@
     pageEncoding="ISO-8859-1"%>
     
 <%
-Cookie cookie = null;
-Cookie[] cookies = null;
-// Get an array of Cookies associated with this domain
-cookies = request.getCookies();
 
-if( cookies != null ){
-    
-    for (int i = 0; i < cookies.length; i++){
-       cookie = cookies[i];
-       System.out.println("Name : " + cookie.getName( ) + ",  ");
-       System.out.println("Value: " + cookie.getValue( )+" <br/>");
-    }}else{
-    	System.out.println("<h2>No cookies founds</h2>");
-          }
 	String[] strArrName = (String[])session.getAttribute("strArrName");
 	String[] strArrPath = (String[])session.getAttribute("strArrPath");
 	String[] strArrFileId = (String[])session.getAttribute("strArrFileId");
@@ -37,8 +24,10 @@ if( cookies != null ){
  	String msg = (String)request.getAttribute("message") ;
 	String errmsg = (String)request.getAttribute("error_message") ;
 	String logged_user = (String)session.getAttribute("user_name");
+	String success =(String)request.getAttribute("message1");
+	
 	String logged_user_mail = (String)session.getAttribute("user_mail");
-	String rootpath = getServletContext().getRealPath("/")+"Userfiles"+File.separator+logged_user_mail+File.separator+ "My Files"+"/";
+	String rootpath = getServletContext().getRealPath("/")+"/Userfiles/"+logged_user_mail+ "/My Files"+"/";
 	DashboardServiceImpl dashboardServiceImpl=(DashboardServiceImpl)config.getServletContext().getAttribute("dashboardServiceImpl");
 	String dropdown = (String) request.getAttribute("dropdown");
 	dropdown = dropdown==null? "" : dropdown;
@@ -58,8 +47,7 @@ if( cookies != null ){
 		 strArrFileId[intCount] = strFileId;
 		 strArrIsExpiry[intCount] = strIsExpiry;
 		 intCounter[intCount] = intCount;
-	}  else{
-		 System.out.println("INside f2path null ");
+	}  else{		 
 		 strArrName[intCount] = "";
 		 strArrPath[intCount] = "";
 		 strArrFileId[intCount] = "";
@@ -275,7 +263,23 @@ if( cookies != null ){
                     });
 
       	   $("#btnUploadFile").click(function (e)
-            {    			
+            {   
+      		 if(document.getElementById("Choose File").value == ""){
+      			    $("#upload-file").hide();
+    			    $("#lean_overlay").hide();
+    			    document.getElementById("L_Message").style.display ="block"; 
+    			    document.getElementById("L_Message").innerHTML = "Choose a file.";
+      				return false;
+       	  		}
+      		   if(document.getElementById("f2path").value != ""){
+      		    if(document.getElementById("f2path").value.indexOf('<%=logged_user_mail%>') == -1){      			
+   		  		   	$("#upload-file").hide();
+    			    $("#lean_overlay").hide();
+    			    document.getElementById("L_Message").style.display="block";
+   		    		document.getElementById("L_Message").innerHTML = "This is a shared folder. You cannot upload files.";      		    	
+   		    		return false;
+   		   		 }}
+      		   
 				 var f=document.form1;
 				 f.f1fileid.value="<%=strFileId%>";
 				 f.f1filename.value="<%=strFolderName%>";
@@ -285,8 +289,8 @@ if( cookies != null ){
 	        	 f.method="post";	        	
 	        	 f.action='uploadfile.do';
 	        	 f.submit();				
-				 HideDialog();
-                 e.preventDefault();			
+	        	 $("#upload-file").hide();
+ 		         $("#lean_overlay").hide();	
             });
             
           $("#btnCancelFile").click(function (e)
@@ -298,17 +302,25 @@ if( cookies != null ){
             
           $("#btnUploadFolder").click(function (e)
              {
-        		var f=document.form1;
-        		f.f1fileid.value="<%=strFileId%>";
+        	  if(document.getElementById("f2path").value != ""){
+        	  if(document.getElementById("f2path").value.indexOf('<%=logged_user_mail%>') == -1){  		   
+  		    		$("#create-folder").hide();
+   		       		$("#lean_overlay").hide();
+   		         document.getElementById("L_Message").style.display="block";
+  		    		document.getElementById("L_Message").innerHTML = "This is a shared folder. You cannot create folder.";      		    	
+  		    		return false;
+  		    	}}
+      			var f=document.form1;
+      			f.f1fileid.value="<%=strFileId%>";
 				f.f1filename.value="<%=strFolderName%>";
 				f.f1isexpiry.value="<%=strIsExpiry%>";
 				f.f1cntinc.value="<%=strCntInc%>";
-        	    f.method="post";
-        	    f.action='createFolder.do';
-        	    f.submit();				
-        		HideDialog();
-                e.preventDefault();			
-             });
+      	    	f.method="post";
+      	    	f.action='createFolder.do';
+      	    	f.submit();				
+      	    	$("#create-folder").hide();
+		        $("#lean_overlay").hide();		
+           });
                     
           $("#btnCancelFolder").click(function (e)
               {        		        				
@@ -317,15 +329,19 @@ if( cookies != null ){
                 			
              });
           $("#btnDelFileFolder").click(function (e)
-                {          		
-        	 	var f=document.form2;
+                { 
+        	  	var f=document.form2;
             	f.file_id.value=str_file_id;
     		    f.file_name.value=str_file_name;
     		    f.file_path.value=str_file_path;
     		    f.is_folder.value=str_is_folder;
     		    f.is_secure.value=str_is_secure;
     		    f.functionality.value=str_delete_file;
-    		   
+    		   	f.cntInc.value =  "<%=intCount%>";
+    		   	f.f2path.value = "<%=strf2path%>";
+    		   	f.is_expiry.value = "<%=strIsExpiry%>";
+    		   	f.folderName.value = "<%=strFolderName%>";
+    		   	f.folderId.value = "<%=strFileId%>";
         	    f.method="post";        	    
         	    f.action="deleteFile.do";
         	    f.submit(); 
@@ -395,16 +411,7 @@ if( cookies != null ){
             $("#overlay3").hide();
             $("#dialog3").fadeOut(300);
         } 
-        function HideDialog()
-        {
-            $("#overlay").hide();
-            $("#dialog").fadeOut(300);
-        }
-        function HideDialog1()
-        {
-            $("#overlay1").hide();
-            $("#dialog1").fadeOut(300);
-        }   
+        
         function get_selection(input) {
         	var f=document.form2;
     		document.getElementById("selection").value = input;      		
@@ -412,8 +419,7 @@ if( cookies != null ){
     	    f.action='dashboard.do';
     	    f.submit();
     	}
-        function open_file_folder(id,name,path,isfolder,issecure,openfile,ownerid,isexpiry){ 
-        		
+        function open_file_folder(id,name,path,isfolder,issecure,openfile,ownerid,isexpiry){         			
         			var f=document.form2;
         			f.method="post";
         		    f.file_id.value=id;
@@ -424,12 +430,16 @@ if( cookies != null ){
         		    f.functionality.value=openfile;
         		    f.owner_id.value=ownerid;
         		    f.is_expiry.value=isexpiry;
+        		    f.folderName.value=name;
+        		    f.folderId.value=id;
+        		    f.folderExpiry.value=isexpiry;
+        		    document.getElementById("cntInc").value = "<%=intCount%>";
         		    if(isfolder==0){
         		    	f.action="openFile.do";
         		    }else{
         		    	var f2path = document.getElementById("f2path");
         		    	var f1path = document.getElementById("f1path");
-        		    	document.getElementById("cntInc").value = "<%=intCount%>";        		   		
+        		    	        		   		
         		    	f1path.value = path+name+'/';
         		    	f2path.value = path+name+'/';
         		       	f.action="openFolder.do";
@@ -460,7 +470,13 @@ if( cookies != null ){
         function sharefile(id,filename,userid,isfolder1,createdby1,ownerid){
             document.form2.file_txt_id.value=id;
             document.form2.file_txt_filename.value= filename;
-          	document.form2.file_txt_isfolder.value=isfolder1;       	 
+          	document.form2.file_txt_isfolder.value=isfolder1;
+          	document.form2.f2path.value = '<%=strf2path%>';
+          	document.form2.cntInc.value =  "<%=intCount%>";
+			document.form2.is_expiry.value = "<%=strIsExpiry%>";
+			document.form2.folderName.value = "<%=strFolderName%>";
+			document.form2.folderId.value = "<%=strFileId%>";
+			document.form2.folderExpiry.value = "<%=strIsExpiry%>";
           	var f=document.form2;
             f.method="post";
             f.action='sharefile.do';
@@ -470,7 +486,7 @@ if( cookies != null ){
 		function newWindow(doc){
 			window.open('common/simple_document.jsp?doc='+doc,'open_window','menubar,toolbar,location,directories,status,scrollbars,resizable,dependent,width=640,height=480,left=0,top=0');
 		}
-        function getSelected(){        	
+        function getSelected(){           	
         	var sel = document.getElementById("select");
        		var selection = document.getElementById("selection").value;
        		var index = sel.options[0].selected;
@@ -485,11 +501,11 @@ if( cookies != null ){
         } 
         function openFolderHierarchy(folpath,fid,folexpiry,intCounter,folname){   	        	
         	var f=document.form2;
-        	f.file_id.value=fid;
+        	f.folderId.value=fid;
  		    f.file_path.value=folpath;
  		    f.is_expiry.value=folexpiry;        	
 			f.f2path.value=folpath;	
-			f.file_name.value=folname;			
+			f.folderName.value=folname;			
 			if(intCounter != 0){
 				f.cntInc.value=intCounter-1;
 			}else{
@@ -509,12 +525,12 @@ if( cookies != null ){
 	if(!strBool.equals("null")){	
 		String strExpiry = (String)request.getAttribute("strExpiredDateTime");
 		String strPrint = (String)request.getAttribute("strPrint");
-		String strExpMsg = (String)request.getAttribute("strExpMsg");	
+		String strExpMsg = (String)request.getAttribute("strExpMsg");			
 		 session.setAttribute("sessiondoc", strBool);
 		 session.setAttribute("sessionexpiryDate", strExpiry);
 		 session.setAttribute("sessionstrExpMsg", strExpMsg);
-		 session.setAttribute("sessionstrPrint", strPrint); 
-    %>
+		 session.setAttribute("sessionstrPrint", strPrint); %>
+   
 <body onload="newWindow('<%= strBool%>')" style="background:#e5e9ec;">
 <%
 	}} else{
@@ -528,7 +544,6 @@ if( cookies != null ){
 <input type="hidden" id="f1filename" name="f1filename" value="">
 <input type="hidden" id="f1isexpiry" name="f1isexpiry" value="">
 <input type="hidden" id="f1cntinc" name="f1cntinc" value="">
-
 
 <div id="Lockit-inner-wrapper">
 
@@ -617,20 +632,20 @@ if( cookies != null ){
 			<div class="cl"></div>
 			<!--  validations -->
 						<% if(errmsg!=null){%>                    
-             				 <div class="alert alert-error" id="error-holder"><%= errmsg %></div>
+             				 <div class="alert alert-error" id="error-holder"><b><%= errmsg %></b></div>
        					 <%} %><br> 
        					 <% if(msg!=null){%>              
-             				 <div class="alert alert-success" id="error-holder"><b><%= msg %></b></div>
+             				<div class="alert alert-success" id="error-holder1"><b><%= msg %></b></div>
        					 <%}
-       					 String success =(String)request.getAttribute("message1");
-										if (success !=null) {
+							if (success !=null) {
 								 %>
 									<div class="alert alert-error" id="L_Message"><b><%=success%></b></div>
 
-										<% }%>                                
-		
+										<% }else{%>	
+											<div class="alert alert-error" id="L_Message" style="display:none"><b></b></div>
+											<%} %>
    <div class="lockit-data-tables wd fl">
-   
+   		<span id="file-error" style="color:red;"></span>
 		 <div id="lockit-events-data"><!--Data-table-Starts-->
 				<table id="my-table" class="table th-font-color">
 					<thead>	
@@ -639,8 +654,8 @@ if( cookies != null ){
 						<th class="img-align-center">Share</th>
 						<th class="img-align-center">Download</th>
 						<th class="img-align-center">
-			<%
-			if(strf2path.length() == 0 || strf2path == ""){
+			
+		<%	if(strf2path.length() == 0 || strf2path == ""){
 			%>
 						<select class="dropdown-grid" id="select" name="select" onchange="get_selection(this.value)" id="DDSort" style="font: bolder;text-align: center;font-weight: bolder;">
 							<option value="All" id="all" selected>All</option>
@@ -649,19 +664,19 @@ if( cookies != null ){
 						</select>
 			<%
 				}else{
-			%>Owner
-			<%} %>
+			%>Owner<%} %>
+			
 						</th>
 						<th class="img-align-center">Delete</th>
 					</tr></thead>
 				<tbody>
-	    <%  
-		if(dropdown== null || dropdown.equals("All")){   
+	 
+	<%	if(dropdown== null || dropdown.equals("All")){   
 			
 			 if(mydata!=null && mydata.size()>0){                                    
 				for(int i=0;i<mydata.size();i++){ 
 	    %>
-				<tr style="border-bottom:1px solid #cecece;">
+				<tr style="border-top:1px solid #cecece;">
 					<td ><img src='<%=mydata.get(i).get("fileImage") %>'/>&nbsp;<a class="position"  href="#"  onclick="open_file_folder('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "open"%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("IsExpiry")%>')" ><%=mydata.get(i).get("FileName")%></a></td>
 					
 			  		<%  ArrayList<HashMap<String, Object>> shareStatus=(ArrayList<HashMap<String, Object>>)dashboardServiceImpl.fileOptions(logged_user_mail,mydata.get(i).get("FileID").toString());	
@@ -673,8 +688,8 @@ if( cookies != null ){
 	     				%>
 	     			
 	     				<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/share-grey.png"  style="cursor:not-allowed;"/><%}else{ if(mydata.get(i).get("sharing").equals("true")){ %><a href="#"><img src="images/share-grey.png" onclick="sharefile('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("UserID")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("CreatedBy")%>')"/></a><%}else{ %><img src="images/share-grey.png"  style="cursor:not-allowed;"/><%}}%></td>
-				  		
-		<%	 } 	%>
+	     						  		<%	 } 	%>
+		
 			  		<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/download.png"  style="cursor:not-allowed;"/><%}else{ if(mydata.get(i).get("Download").equals("true")){ %><a href="#"><img src="images/download.png" onclick="download_file('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "download"%>')"/></a><%}else { %><img src="images/download.png"  style="cursor:not-allowed;"/><%}}%></td>
 			  		<td style="font: bolder;text-align: center;"><%=mydata.get(i).get("Owner")%></td>
 			  		<%
@@ -696,7 +711,7 @@ if( cookies != null ){
 			 if(mydata!=null && mydata.size()>0){                                                 
 				for(int i=0;i<mydata.size();i++){                                                 	
 	 %>
-			<tr style="border-bottom:1px solid #cecece;">
+			<tr style="border-top:1px solid #cecece;">
 					<td ><img src='<%=mydata.get(i).get("fileImage") %>'/>&nbsp;<a class="position"  href="#"  onclick="open_file_folder('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "open"%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("IsExpiry")%>')" ><%=mydata.get(i).get("FileName")%></a></td>
 				<%  ArrayList<HashMap<String, Object>> shareStatus=(ArrayList<HashMap<String, Object>>)dashboardServiceImpl.fileOptions(logged_user_mail,mydata.get(i).get("FileID").toString());	
 	     			if(shareStatus.size()>0){
@@ -720,17 +735,17 @@ if( cookies != null ){
 			 if(mydata!=null && mydata.size()>0){                                                 
 				for(int i=0;i<mydata.size();i++){                                                 	
 	 %>
-				<tr style="border-bottom:1px solid #cecece;">
-					<td ><img src='<%=mydata.get(i).get("fileImage") %>'/>&nbsp;<a class="position"  href="#"  onclick="open_file_folder('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "open"%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("IsExpiry")%>')" ><%=mydata.get(i).get("FileName")%></a></td>
+				<tr style="border-top:1px solid #cecece;">
+					<td ><img src='<%= mydata.get(i).get("fileImage") %>'/>&nbsp;<a class="position"  href="#"  onclick="open_file_folder('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "open"%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("IsExpiry")%>')" ><%=mydata.get(i).get("FileName")%></a></td>
 				<%  ArrayList<HashMap<String, Object>> shareStatus=(ArrayList<HashMap<String, Object>>)dashboardServiceImpl.fileOptions(logged_user_mail,mydata.get(i).get("FileID").toString());	
 	     			if(shareStatus.size()>0){
 	     				%>		
-					<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/share-icon-green.png" style="cursor:not-allowed;"/><%}else{ if(mydata.get(i).get("sharing").equals("true")){ %><a href="#"><img src="images/share-icon-green.png" onclick="sharefile('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("UserID")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("CreatedBy")%>')"/></a><%}else{ %><img src="images/share-icon-green.png" "cursor:not-allowed;"/><%}}%></td>
+					<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/share-icon-green.png" style="cursor:not-allowed;"/><%}else{ if(mydata.get(i).get("sharing").equals("true")){ %><a href="#"><img src="images/share-icon-green.png" onclick="sharefile('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("UserID")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("CreatedBy")%>')"/></a><%}else{ %><img src="images/share-icon-green.png" style="cursor:not-allowed;"/><%}}%></td>
 			  	<%
 	     			}else{		
-	     				%>		<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/share-grey.png" style="cursor:not-allowed;"/><%}else{ if(mydata.get(i).get("sharing").equals("true")){ %><a href="#"><img src="images/share-grey.png" onclick="sharefile('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("UserID")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("CreatedBy")%>')"/></a><%}else{ %><img src="images/share-grey.png" "cursor:not-allowed;"/><%}}%></td>
+	     				%>		<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/share-grey.png" style="cursor:not-allowed;"/><%}else{ if(mydata.get(i).get("sharing").equals("true")){ %><a href="#"><img src="images/share-grey.png" onclick="sharefile('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("UserID")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%=mydata.get(i).get("OwnerID")%>','<%=mydata.get(i).get("CreatedBy")%>')"/></a><%}else{ %><img src="images/share-grey.png" style="cursor:not-allowed;"/><%}}%></td>
 				<%	 } 	%>
-			  		<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/download.png" style="cursor:not-allowed;"><%}else{ if(mydata.get(i).get("Download").equals("true")){ %><a href="#"><img src="images/download.png" onclick="download_file('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "download"%>')"/></a><%}else { %><img src="images/download.png" "cursor:not-allowed;"/><%}}%></td>
+			  		<td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/download.png" style="cursor:not-allowed;"><%}else{ if(mydata.get(i).get("Download").equals("true")){ %><a href="#"><img src="images/download.png" onclick="download_file('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "download"%>')"/></a><%}else { %><img src="images/download.png" style="cursor:not-allowed;"/><%}}%></td>
 					<td style="font: bolder;text-align: center;"><%=mydata.get(i).get("Owner")%></td>
 					<%-- <td style="font: bolder;text-align: center;"><%if(mydata.get(i).get("IsExpiry").equals("1")){%><img src="images/del.png" style="cursor:not-allowed;"/><%}else{ %><a href="#"><img src="images/del.png" onclick="delete_file('<%=mydata.get(i).get("FileID")%>','<%=mydata.get(i).get("FileName")%>','<%=mydata.get(i).get("FilePath")%>','<%=mydata.get(i).get("IsFolder")%>','<%=mydata.get(i).get("IsSecure")%>','<%= "delete"%>')"/></a><%} %></td> --%>
 					<td style="font: bolder;text-align: center;"><img src="images/del.png" style="cursor:not-allowed;"/></td>
@@ -775,8 +790,8 @@ if( cookies != null ){
 				</div>
 				<span id="lblMessage" style="color:Red;"></span>
 				<div class="txt-fld">
-					<input name="file_type" type="radio" id="file_type" value="secure" checked="checked"/>Secure
-            <input name="file_type" type="radio" id="file_type" value="non-secure" />Non-Secure
+					<input style="width:50px" name="file_type" type="radio" id="file_type" value="secure" checked="checked"/>Secure
+            <input style="width:50px" name="file_type" type="radio" id="file_type" value="non-secure" />Non-Secure
 				</div>
 				<div class="txt-fld">
 					<input name="Choose File" type="file" id="Choose File" value="Choose File" />
@@ -860,7 +875,7 @@ if( cookies != null ){
 	<input type="hidden" name="owner_id" value="">
 	<input type="hidden" name="is_expiry" value="<%= strIsExpiry%>">
 	<input type="hidden" id="selection" name="selection" value="<%= dropdown%>">
-	<input type="hidden" id="f2path" name="f2path" value="<%= strf2path%>" >
+	
 
    <input type="hidden" name="file_options" id="file_options" value="">
    <input type="hidden" name="file_txt_email" id="file_txt_email" value="">
@@ -871,7 +886,12 @@ if( cookies != null ){
    <input type="hidden" name="file_txt_isfolder" id="file_txt_isfolder" value="">
    <input type="hidden" name="file_txt_createdby" id="file_txt_createdby" value="">
    <input type="hidden" name="file_txt_filename" id="file_txt_filename" value="">
-   <input type="hidden" name="cntInc" id="cntInc" value="">	
+   
+   <input type="hidden" name="cntInc" id="cntInc" value="">	   
+   <input type="hidden" name="folderId" id="folderId" value="">
+   <input type="hidden" name="folderName" id="folderName" value="">
+   <input type="hidden" name="folderExpiry" id="folderExpiry" value="">
+   <input type="hidden" id="f2path" name="f2path" value="<%= strf2path%>" >
 </form>
 </body>
 </html>

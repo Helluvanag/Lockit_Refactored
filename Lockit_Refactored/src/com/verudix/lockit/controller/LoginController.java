@@ -53,21 +53,21 @@ public class LoginController {
 	 	
 	 	@RequestMapping("/loginwithgoogle.do")
 	    public ModelAndView loginwithgoogle(HttpServletRequest request, HttpServletResponse response) throws Exception {
-	 		System.out.println("Inside /loginwithgoogle.do-------");
+	 		logger.debug("Inside /loginwithgoogle.do-------");
 	 		return new ModelAndView("loginwithgoogle1");
 	 	}
 	 	
 	 	
 	 	@RequestMapping("/loginwithgoogle1.do")
 	    public ModelAndView loginwithgoogle1(HttpServletRequest request, HttpServletResponse response) throws Exception {
-	 		System.out.println("Inside /loginwithgoogle1.do-------");
+	 		logger.debug("Inside /loginwithgoogle1.do-------");
 	 		String sBuffer ="";
 	 		try{
 		 		String access_token = request.getParameter("access_token");
-		 		System.out.println("access_token-------"+access_token);
+		 		logger.debug("access_token-------"+access_token);
 		 		
 		 		String URI = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=" + access_token;
-		 		System.out.println("URI-------"+URI);
+		 		logger.debug("URI-------"+URI);
 		 	
 		 		
 		 		 URL oracle = new URL(URI);
@@ -81,7 +81,7 @@ public class LoginController {
 		           
 		         in.close();		
 		 		
-		         System.out.println("sBuffer..."+sBuffer);
+		         logger.debug("sBuffer..."+sBuffer);
 		         
 		        sBuffer = sBuffer.replace("id", "").replace("email", "");
 	            sBuffer = sBuffer.replace("given_name", "");
@@ -98,14 +98,15 @@ public class LoginController {
 		         Email_address = Email_address.trim();
 		         firstName = firstName.trim();
 		         LastName = LastName.trim();
-		         System.out.println("Google_ID..."+Google_ID);
-		         System.out.println("Email_address..."+Email_address);
-		         System.out.println("firstName..."+firstName);
-		         System.out.println("LastName...is"+LastName);
+		         logger.debug("Google_ID..."+Google_ID);
+		         logger.debug("Email_address..."+Email_address);
+		         logger.debug("firstName..."+firstName);
+		         logger.debug("LastName...is"+LastName);
 	                
 		         session = request.getSession(true);
 	         	 session.setAttribute("user_name", firstName+" "+LastName);
-	         	 session.setAttribute("user_mail",  Email_address); 
+	         	 session.setAttribute("user_mail",  Email_address);
+	         	 session.setAttribute("access_token",access_token);
 	         	 String displayname = firstName+" "+LastName;
 	         	String[] strArrName = new String[10];
          		String[] strArrPath = new String[10];
@@ -114,7 +115,7 @@ public class LoginController {
          		int[] intCounter = new int[10];
 	             String strResult = loginService.insertgoogleuser(Email_address,"null",displayname,firstName,LastName);
 		         
-			        System.out.println("strResult in login with google controller....."+strResult);
+			        logger.debug("strResult in login with google controller....."+strResult);
 			         
 			         if(strResult.equals("1")){			        	   
 			     		session = request.getSession(true);
@@ -155,7 +156,7 @@ public class LoginController {
 			        
 		 		}
 		 		catch(Exception e){
-		 			System.out.println("Google login error ...."+e.toString());
+		 			logger.debug("Google login error ...."+e.toString());
 		 			return new ModelAndView("redirect:login.do");
 		 		}
 		 	}

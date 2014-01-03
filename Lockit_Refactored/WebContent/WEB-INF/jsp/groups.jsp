@@ -17,6 +17,7 @@
 	String username,groupid;	
 	GroupsServiceImpl groupsServiceImpl = (GroupsServiceImpl)config.getServletContext().getAttribute("groupsServiceImpl");	
 	String msg = (String)request.getAttribute("message") ;
+	String msg1 = (String)request.getAttribute("message1") ;
 %>
 
 <!DOCTYPE html>
@@ -30,7 +31,7 @@
        <!--  new css -->
         <link href="css/inner.css" rel="stylesheet" type="text/css" />
         <link href="css/popup.css" rel="stylesheet" type="text/css" />
-        
+        <link rel="shortcut icon" href="images/favicon1.ico">
         
         <!-- elusive webicons -->
             <link rel="stylesheet" href="css/elusive/css/elusive-webfont.css" />
@@ -445,9 +446,13 @@
 			 	<div class="lockit-data-tables wd fl">
 			 	 		<div id="lockit-events-data"><!--Data-table-Starts-->
 			 	 		<p><% if(msg!=null){%>              
-             				 <span id="error-holder"  style="color:Blue;"><%= msg %></span>
-       					 <%} %></p>
+             				 <div id="error-holder" class="alert alert-success"><%= msg %></div>
+       					 <%} 
        					 
+       					  if(msg1!=null){%>              
+        				<%--  <span id="error-holder"  style="color:red;"><%= msg1%></span> --%>
+        				  <div class="alert alert-error" id="error-holder"><%= msg1 %></div>  
+  					 <%} %></p>
 				</div>
 		 	</div>
 		 	<div class="lockit-data-tables wd fl">
@@ -523,7 +528,7 @@
 									String error =(String)request.getAttribute("success_message");
 									if (error !=null) {
 									%>
-										<span id="error-holder" style="color:Blue;"><%=error%></span>
+										<span id="error-holder" style="color:Green;"><%=error%></span>
 
 									<% 
 									}
@@ -547,10 +552,11 @@
           	
           	%>
 			
-				<tr>
-													
-				<td onclick="editGroup('<%=mydata.get(i).get("groupname")%>','<%=mydata.get(i).get("groupid")%>');"><a href="#"><%=mydata.get(i).get("groupname")%></a></td>
-				<td onclick="editGroup('<%=mydata.get(i).get("groupname")%>','<%=mydata.get(i).get("groupid")%>');"><a href="#"><img src="images/edit.png" /></a></td>
+				<tr>													
+				<%-- <td onclick="editGroup('<%=mydata.get(i).get("groupname")%>','<%=mydata.get(i).get("groupid")%>');"><a href="#"><%=mydata.get(i).get("groupname")%></a></td>
+				<td onclick="editGroup('<%=mydata.get(i).get("groupname")%>','<%=mydata.get(i).get("groupid")%>');"><a href="#"><img src="images/edit.png" /></a></td> --%>
+				<td><a href="#" onclick="editGroup('<%=mydata.get(i).get("groupname")%>','<%=mydata.get(i).get("groupid")%>');"><%=mydata.get(i).get("groupname")%></a></td>
+				<td><a href="#" onclick="editGroup('<%=mydata.get(i).get("groupname")%>','<%=mydata.get(i).get("groupid")%>');"><img src="images/edit.png" /></a></td>
 			    <td  class="img-align-center"><a href="#"><img src="images/del.png" onclick="delete_group('<%=logged_user_mail%>','<%=mydata.get(i).get("groupid")%>')"/></a></td>
 			
 				 </tr>

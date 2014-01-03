@@ -46,14 +46,14 @@ public class CommonController {
 			
 			 if(bool)
 			 {				
-				messagek= "Signup Success. A mail has been triggered to your registered mail id.";
+				messagek= "Signup Success. A mail has been sent.";
 				mav.setViewName("login");
 				 mav.addObject("message1",messagek);
 				 return mav;
 				
 			 }else
 			 {				 
-				 messagek= "Sign up failed.User already exists.";
+				 messagek= "User already exists.";
 				 mav.setViewName("signup");
 				 mav.addObject("message1",messagek);
 				 return mav;
@@ -120,12 +120,12 @@ public class CommonController {
 	 		}
 			 
 			 if(updatePassword.equals("1"))
-				  message1="Password changed successfully.";
+				  message="Password changed successfully.";
 			 else
 				 message = "Incorrect old password entered.";			
 			 			
 			 mav.setViewName("changePassword");
-			 mav.addObject("message1",message1);
+		//	 mav.addObject("message1",message1);
 			 mav.addObject("message",message);
 			 return mav;
  		}catch(Exception error){
@@ -157,12 +157,12 @@ public ModelAndView ForgotPassword(HttpServletRequest request, HttpServletRespon
 
 	try{	
 		String email = request.getParameter("email");
-		System.out.println("email is---"+email);
-		boolean bool = commonService.getPwd(request,response, email);
+		String strDisplayName=commonService.getDisplay(email);	
+		boolean bool = commonService.getPwd(request,response, email, strDisplayName);
 		if(bool)
 		 return new ModelAndView("ChekEmail");
 		else
-		 return new ModelAndView("forgot_password");
+		 return new ModelAndView("forgot_password","errMsg","You are not a registered user.");
 	 }catch(Exception e){
 		 System.out.println("error in ForgotPassword.do..."+e.toString());
 		 return new ModelAndView("login");

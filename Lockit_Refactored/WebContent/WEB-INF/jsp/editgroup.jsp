@@ -29,7 +29,7 @@
             
         <!--  new css -->
         <link href="css/inner.css" rel="stylesheet" type="text/css" />
-        
+        <link rel="shortcut icon" href="images/favicon1.ico">
         <!-- elusive webicons -->
             <link rel="stylesheet" href="css/elusive/css/elusive-webfont.css" />
             
@@ -40,6 +40,23 @@
         <link href="assets/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css"/>
         
         <link href="css/styles.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/pagination.js"></script>	
+<script type="text/javascript" src="js/jquery.min.js"></script>	
+<script type="text/javascript" src="js/jquery.pages.js"></script>	
+	 <style type="text/css">   
+            .pg-normal {
+                color: black;
+                font-weight: normal;
+                text-decoration: none;   
+                cursor: pointer;   
+            }
+            .pg-selected {
+                color: black;
+                font-weight: bold;       
+                text-decoration: underline;
+                cursor: pointer;
+            }
+        </style>        
 <script src="js/jquery-1.4.3.min.js" type="text/javascript"></script>
     <style type="text/css">
 		.modalBackground
@@ -202,21 +219,20 @@
             
             <!-- table data -->
 		 	<div class="lockit-data-tables wd fl">
-		 		<p style="text-align:left;  " > <span id="L_Message">Select / Deselect users to update the group : <%=gname %></span> </p> <span id="error-holder1" style="color:red;"></span>
+		 		<p style="text-align:left;"><span id="L_Message">Select / Deselect users to update the group : <%=gname %></span> </p> <span id="error-holder1" style="color:red;"></span>
 		 	</div>
 		 	<div class="lockit-data-tables wd fl" style="height:320px; overflow-y:scroll;">
-		 		<table class="table th-font-color">
+		 		<table class="table th-font-color" id="datatable1">
 				<thead>
 					<tr class="th-font-weight">
-						<th class="img-align-left" scope="col"><input id="selectall" type="checkbox"/></th>
+						<th class="tooltip-hover" class="img-align-left" scope="col"><div class="tooltip">Select all users from all pages.</div><input id="selectall" type="checkbox"/></th>
 					   	<th class="img-align-left" scope="col"><a href="javascript:__doPostBack(&#39;gv_editgroup&#39;,&#39;Sort$displayname&#39;)">Name</a></th>
 					   	<th class="img-align-left" scope="col"><a href="javascript:__doPostBack(&#39;gv_editgroup&#39;,&#39;Sort$UserID&#39;)">UserID</a></th>
 					</tr>
 				</thead>
 				
 				<tbody>
-										
-				 <%
+			 <%
 				 	try{				 		
 				 		 Vector<String> user_id = new  Vector<String>();
 			 			 Vector<String> is_active = new  Vector<String>();
@@ -229,7 +245,7 @@
 				 			}
 				 		}				 	
                     	 
-             ArrayList<HashMap<String, Object>> mydata1 =  (ArrayList<HashMap<String, Object>>)session.getAttribute("editgroupallusercontacts");                	                		 
+            		 ArrayList<HashMap<String, Object>> mydata1 =  (ArrayList<HashMap<String, Object>>)session.getAttribute("editgroupallusercontacts");                	                		 
            	 
 				          if(mydata1!=null && mydata1.size()>0){				          
 				          	for(int i=0;i<mydata1.size();i++){	
@@ -290,6 +306,13 @@
 						
 														
 			</table>
+			<div id="pageNavPosition"></div>
+			<script type="text/javascript">			
+ 			var pager = new Pager('datatable1', 10);
+	        pager.init();
+	        pager.showPageNav('pager', 'pageNavPosition');
+	        pager.showPage(1);
+        </script>
 		 	</div>
 		 	<div class="lockit-data-tables wd fl">
 		 		<input type="button" name="Btn_Save" value="Update" id="Btn_Save" class="btn btn-primary" onclick="update_group('<%=gid %>');" />  &nbsp; &nbsp;

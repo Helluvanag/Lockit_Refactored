@@ -5,10 +5,10 @@
 	if(conf.getConfig("password") == null){
 		response.sendRedirect("../index.jsp");
 	}
-	String doc = request.getParameter("doc");
-	String strExpiry = request.getParameter("expiryDate");
-	String strExpMsg = request.getParameter("strExpMsg");
-	String strPrint = request.getParameter("strPrint");
+	String doc = (String)session.getAttribute("sessiondoc");
+	String strExpiry = (String)session.getAttribute("sessionexpiryDate");
+	String strExpMsg = (String)session.getAttribute("sessionstrExpMsg");
+	String strPrint = (String)session.getAttribute("sessionstrPrint");
 	System.out.println("doc...."+doc+"------strExpiry...."+strExpiry+"-----strExpMsg:"+strExpMsg+"-----strPrint:"+strPrint);	
 	
 	if(doc == null)
@@ -18,10 +18,9 @@
 %>
 <html>
     <head>
-        <title>Lockit Document Viewer</title>
+       <title>Lockit Document Viewer</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-	<% 	if(strPrint.equals("1")) {%>
+  <% 	if(strPrint.equals("1")) {%>
 		<link href="<%=dir %>css/inner.css" rel="stylesheet" type="text/css" />
 		<link rel="stylesheet" type="text/css" href="<%=dir %>css/flexpaper.css" />
 		<script type="text/javascript" src="<%=dir %>js/jquery.min.js"></script>
@@ -29,16 +28,15 @@
 		<script type="text/javascript" src="<%=dir %>js/flexpaper.js"></script>
 		<script type="text/javascript" src="<%=dir %>js/flexpaper_handlers.js"></script>
 		<%}else { %>
+		<link href="<%=dir %>css/inner.css" rel="stylesheet" type="text/css" />
 		<link rel="stylesheet" type="text/css" href="<%=dir %>css/flexpaper.css" />
 		<script type="text/javascript" src="<%=dir %>js/jquery.min.js"></script>
 		<script type="text/javascript" src="<%=dir %>js/jquery.extensions.min.js"></script>
 		<script type="text/javascript" src="<%=dir %>js/flexpaper_cRO.js"></script>
 		<script type="text/javascript" src="<%=dir %>js/flexpaper_handlers_cRO.js"></script>
-		<%} %>
-    </head>
-    <body>
+		<%} %>    </head>
+  <body>
     <div id="Lockit-inner-wrapper">
-
 <!--Lockit-Inner-Header-->
 <div id="Lockit-inner-header-wrapper">
     <div class="Lockit-inner-header-container">
@@ -55,17 +53,16 @@
 <div id="Lockit-inner-body-wrapper">
     <div class="Lockit-inner-body-container">
       <div class="Lockit-inner-body wd fl">
-          
-          <div class="Lockit-main-content fl">
+        <div class="Lockit-main-content fl">
           	<!-- viewer -->
-          		 <%if(strExpiry != ""){
+      <%if(strExpiry != ""){
     	if(strExpiry.equals("1969-01-01 00:00:00.0") || strExpiry == "1969-01-01 00:00:00.0"){ 
     	%>
     	<span id="message" style="display: block; margin: 0px auto; text-align: center;color:red"></span>
     	<%}else{ %>
     	<span id="message" style="display: block; margin: 0px auto; text-align: center;color:red">File Expiry Date : <%=strExpiry%></span>
     	<%} %>
-    	<div id="documentViewer" class="flexpaper_viewer" style="position:relative;left:0px;top:20px;width:980px;height:100%"></div>
+		<div id="documentViewer" class="flexpaper_viewer" style="position:relative;left:0px;top:20px;width:980px;height:990px"></div>
 		 
 		<script type="text/javascript">
 			function getDocumentUrl(document){
@@ -126,8 +123,8 @@
 					 }
 			});
 			</script>
-            <!--  end viewer-->
-          </div>
+		   <!--  end viewer-->
+           </div>
       </div>
     </div>
 </div>

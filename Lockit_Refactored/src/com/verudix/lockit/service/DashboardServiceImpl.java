@@ -41,11 +41,12 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import com.verudix.lockit.util.FileEncryptor;
+import com.verudix.lockit.util.MailSender;
 import com.verudix.lockit.flexpaperviewer.Config;
 import com.verudix.lockit.flexpaperviewer.pdf2json;
 import com.verudix.lockit.flexpaperviewer.pdf2swf;
 import com.verudix.lockit.dao.DashboardDao;
-
+import com.verudix.lockit.util.CreateFolders;
 import com.verudix.lockit.util.PDFConversion;
 import org.apache.log4j.Logger;
 import java.text.DateFormat;
@@ -55,7 +56,7 @@ public class DashboardServiceImpl implements DashboardService {
 	//OutputStream out;
 	File file = null;
 	String photourl = "";
-	String expiredTime = "";
+	
 	List usersList=new ArrayList();
 	static ArrayList<HashMap<String,Object>> list	= new ArrayList<HashMap<String,Object>>();
 	static ArrayList<HashMap<String,Object>> list1	= new ArrayList<HashMap<String,Object>>();
@@ -384,7 +385,8 @@ public class DashboardServiceImpl implements DashboardService {
 					try{
 						if(is_folder.equals("0")){
 							String src_path = file_path+file_name;
-							logger.debug("The src_path is---"+src_path);															
+							logger.debug("The src_path is---"+src_path);
+							CreateFolders.createRootFolders(request, logged_user_mail);//Create Folders if necessary							
 							String pdfpath = request.getServletContext().getRealPath("/")+"Userfiles"+File.separator+logged_user_mail+File.separator+"convertedPdfs"+File.separator;
 							String swfpath = request.getServletContext().getRealPath("/")+"Userfiles"+File.separator+logged_user_mail+File.separator+"convertedSwfs"+File.separator;	
 							String des_path =  request.getServletContext().getRealPath("/")+"Userfiles"+File.separator+logged_user_mail+File.separator+"convertedPdfs"+File.separator+(file_name.substring(0,file_name.lastIndexOf("."))+".pdf").replaceAll("\\s+","");
@@ -952,7 +954,7 @@ public class DashboardServiceImpl implements DashboardService {
 	 @Override
 		public boolean shareFile(HttpServletRequest request,HttpServletResponse response,String logged_user_mail, String strEmailID,
 				String fileid, int Days, int Hours, int Minutes, String download, String share, String print, String isfolder,String filename1) {		 
-	
+		 		String expiredTime = "";
 		 		final Calendar cal = Calendar.getInstance();
 				DateFormat newFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
 				String createdDate=newFormat.format(cal.getTime());			 
@@ -960,7 +962,7 @@ public class DashboardServiceImpl implements DashboardService {
 				
 	    if (Days == 0 && Hours == 0  && Minutes == 0)
 	     {
-	    	  expiredTime=newFormat.format(cal.getTime()); 
+	    	expiredTime="1969-01-01 00:00:00.0";
 	    	  logger.debug("The expiredTime in service is************"+expiredTime);
 	     }
 	     else 
@@ -972,56 +974,34 @@ public class DashboardServiceImpl implements DashboardService {
 	    	  	expiredTime = newFormat.format(cal.getTime());	    	  	
 	    	  	logger.debug("The expiredTime in service is in ELSE************"+expiredTime);
 	     }
-			try{			
+			try{		
+					String strDisplayName1 = dashboardDao.usp_Select_UserPrfoile(strEmailID);
 					String strResult = (String) dashboardDao.usp_Insert_ShareFile(logged_user_mail,strEmailID,fileid,sharedTime,expiredTime,createdDate,download,share,print,isfolder);
 					int i = Integer.parseInt(strResult);			 	 
 			 		if(i==1)
-			 		{   request.setAttribute("message1", "Sharefile succuss.");
-			 					   
-			 					    String to = strEmailID;				
-			 					    final String from = "mailkeert@gmail.com";/** gmail id***/		
-			 					    final String cc = "mailkeert@gmail.com";
-			 					    String host = "smtp.gmail.com";		     
-			 					    final String pwd = "keerthikeerthi";/** gmail id password***/		     
-			 					 
-			 					 //  String body = "Dear User,"+"\n"+logged_user_mail+ " has  shared "+filename1+"  file with you.";
-			 					    String body = "Dear User," +"\n"+ logged_user_mail+ " has  shared "+filename1+"  file with you.Now you can login here"+"\n"+"http://defigomail.com:8082/Lockit_Refactored/login.do?UserName="+strEmailID+"";
-			 					    Properties props = new Properties();   
-			 					    props.setProperty("mail.transport.protocol", "smtp");   
-			 					    props.setProperty("mail.host", host);   
-			 					    props.put("mail.smtp.auth", "true");   
-			 					    props.put("mail.smtp.port", "465");   
-			 					    props.put("mail.smtp.socketFactory.port", "465");   
-			 					    props.put("mail.smtp.socketFactory.class",  "javax.net.ssl.SSLSocketFactory");   
-			 					    props.put("mail.smtp.socketFactory.fallback", "false");   
-			 					    props.setProperty("mail.smtp.quitwait", "false"); 
-			 					    Session session1 = Session.getInstance(props,  new javax.mail.Authenticator() {
-			 					    		protected PasswordAuthentication getPasswordAuthentication() {		   	
-			 					    			return new PasswordAuthentication(from,pwd);
-			 					    		}
-			 					    });
-			 			        MimeMessage message = new MimeMessage(session1);
-			 			        DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/plain"));   
-			 			        message.setFrom(new InternetAddress(from));
-			 			        message.addRecipient(Message.RecipientType.TO,new InternetAddress(to));
-			 			        message.addRecipient(Message.RecipientType.CC,new InternetAddress(cc));
-			 			        message.setSubject("File shared successfully");
-			 			        message.setDataHandler(handler); 
-			 			        Transport.send(message);
-				   
+			 		{   
+			 			request.setAttribute("message1", "Sharefile succuss.");
+			 		    String to = strEmailID;	
+			 		   String body="<body> Dear " +strDisplayName1+",<br>Please be informed that  "+ logged_user_mail+ " has shared "+filename1+"  file with you.<br>Thank You,<br>Lockit Team. </body> ";
+					//    String body = "Dear "+strDisplayName1+", "+"\n"+"Please be informed that "+ logged_user_mail+ " has  shared "+filename1+"  File with you."+"\n"+"Thank You,"+"\n"+"Lockit Team.";
+					    String From="lockit@verudix.org";
+			 		    String sub="File shared.";
+			 		    MailSender.SendMail( From, strEmailID, sub, body, strDisplayName1);
+					    return true;		 					
+			 					
 			} else
 		    { 
 		    	System.out.println("isfolder value in else"+isfolder);
 		    	  return false;
 		    }  
-	 		/* return true;*/
+	 		
 		}  
 		     catch (Exception e) {
 		    		return false;
 			}
-			return true;
+
 	
-	 }
+	 	}
 		@Override
 		public String fileOwnerID(String fileid) {			
 			String id = dashboardDao.usp_Select_SharedFileOwner(fileid);
@@ -1051,6 +1031,7 @@ public class DashboardServiceImpl implements DashboardService {
 		public boolean shareFileFolder(HttpServletRequest request, String logged_user_mail, String strEmailID, String fileid,
 				int days, int hours, int minutes, String download, String share, String print, String isfolder,String filename1) {
 			
+			String expiredTime = "";
 			final Calendar cal = Calendar.getInstance();
 			DateFormat newFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String createdDate=newFormat.format(cal.getTime());
@@ -1058,85 +1039,47 @@ public class DashboardServiceImpl implements DashboardService {
 			String sharedTime=newFormat.format(cal.getTime());
 			if (days == 0 && hours == 0  && minutes == 0)
 			{
-	    	  expiredTime=newFormat.format(cal.getTime()); 
+				expiredTime="1969-01-01 00:00:00.0";
 			}
 			else 
 			{
-	    	  	cal.add( Calendar.DATE, +days ); 	    	  
-	    		         	
-	    	  	cal.add(Calendar.HOUR_OF_DAY, +hours);   
-	       	    	  	
+	    	  	cal.add( Calendar.DATE, +days );   
+	    	  	cal.add(Calendar.HOUR_OF_DAY, +hours); 
 	         	cal.add(Calendar.MINUTE, minutes);
-	    	 	    	  	
-	    	  	expiredTime = newFormat.format(cal.getTime());	    	  	
-	    	  
-	    	 
+	    	  	expiredTime = newFormat.format(cal.getTime());	 
 			}
-			try{							
+			try{	
+					String strDisplayName1 = dashboardDao.usp_Select_UserPrfoile(strEmailID);						
 					String strResult = (String) dashboardDao.usp_Insert_ShareFolder(logged_user_mail,strEmailID,fileid,sharedTime,expiredTime,createdDate,download,share,print,isfolder);			
 					int i = Integer.parseInt(strResult);			 	 
 			 		if(i==1)
 			 		{  
-				    	  request.setAttribute("message1", "ShareFolder succuss.");
-				    	
-			 					  	    
-			 					    String fpkey = Long.toString(Calendar.getInstance().getTimeInMillis());
-			 					    String to = strEmailID;				
-			 					    final String from = "mailkeert@gmail.com";/** gmail id***/
-			 					    final String cc = "mailkeert@gmail.com";
-			 					    String host = "smtp.gmail.com";		     
-			 					    final String pwd = "keerthikeerthi";/** gmail id password***/		     
-			 					 
-			 					   // String body = "Dear User,"+"\n"+logged_user_mail+ " has  shared "+filename1+" Folder with you.";
-			 					    String body = "Dear User," +"\n"+ logged_user_mail+ " has  shared "+filename1+"  Folder with you. Now you can login here"+"\n"+"http://defigomail.com:8082/Lockit_Refactored/login.do?UserName="+strEmailID+"";		
+			 		    
+			 			    String to = strEmailID;	
+				 		    String From="lockit@verudix.org";
+				 		    String sub="Folder shared.";
+				 		    String body="<body> Dear " +strDisplayName1+",<br>Please be informed that  "+ logged_user_mail+ " has shared "+filename1+"  folder with you.<br>Thank You,<br>Lockit Team. </body> ";
+				 		    //String body="Dear "+strDisplayName1+", "+"\n"+"Please be informed that "+ logged_user_mail+ " has  shared "+filename1+ "  Folder with you."+"\n"+"Thank You,"+"\n"+"Lockit Team.";
+				 		    MailSender.SendMail( From, strEmailID, sub, body, strDisplayName1);
+		 					return true;	 					
+	 					
+			 			} else
+			 				{ 
+			 					System.out.println("isfolder value in else"+isfolder);
+			 					return false;
+			 				}  
 			 			
-			 					    Properties props = new Properties();   
-			 					    props.setProperty("mail.transport.protocol", "smtp");   
-			 					    props.setProperty("mail.host", host);   
-			 					    props.put("mail.smtp.auth", "true");   
-			 					    props.put("mail.smtp.port", "465");   
-			 					    props.put("mail.smtp.socketFactory.port", "465");   
-			 					    props.put("mail.smtp.socketFactory.class",  "javax.net.ssl.SSLSocketFactory");   
-			 					    props.put("mail.smtp.socketFactory.fallback", "false");   
-			 					    props.setProperty("mail.smtp.quitwait", "false"); 
-			 					    Session session1 = Session.getInstance(props,  new javax.mail.Authenticator() {
-			 					    		protected PasswordAuthentication getPasswordAuthentication() {		   	
-			 					    			return new PasswordAuthentication(from,pwd);
-			 					    		}
-			 					    });
-			 			        MimeMessage message = new MimeMessage(session1);
-			 			        DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/plain"));   
-			 			        message.setFrom(new InternetAddress(from));
-			 			        message.addRecipient(Message.RecipientType.TO,new InternetAddress(to));
-			 			        message.addRecipient(Message.RecipientType.CC,new InternetAddress(cc));
-			 			        message.setSubject("Folder shared successfully");
-			 			        message.setDataHandler(handler); 
-			 			        Transport.send(message);
-			 			      
-			 			        return true;
-			 			     } else
-							    {  
-						    	  return false;
-						    } 
-			 			     
-			 				} catch (MessagingException mex) {	
-			 			    	 logger.error(mex);
-			 			    		return false;
-			 				
-			 			} catch (SQLException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-								 logger.error(e);
-							}
-			return false; 
-				    	
-			}
+					}  
+				catch (Exception e) {
+					return false;
+				}
+		}
+		
 		@Override
 		public boolean shareFilePropUpdate(HttpServletRequest request, String logged_user_mail, String strEmailID, String fileID,
 				String formattedDate, String download_upd, String sharing_upd, String print_upd) {
 			
-			String strResult = (String) dashboardDao.usp_update_SharedFileProperties(strEmailID,fileID,logged_user_mail,download_upd,sharing_upd,print_upd,formattedDate);
-			
+			String strResult = (String) dashboardDao.usp_update_SharedFileProperties(strEmailID,fileID,logged_user_mail,download_upd,sharing_upd,print_upd,formattedDate);			
 			if(strResult.equals("1"))
 				return true;
 			else
@@ -1171,4 +1114,52 @@ public class DashboardServiceImpl implements DashboardService {
 			}
 				
 		}
+		
+		@Override
+		public ArrayList usp_Select_Groups(
+				String user_mail) {
+			List usersListGroup=new ArrayList();
+			try{
+				usersListGroup.clear();			
+				usersListGroup = dashboardDao.usp_Select_Groups(user_mail);
+				return (ArrayList) usersListGroup;
+			}catch(Exception e){
+				logger.error("All Group Names:"+e.toString());
+				return null;
+			}
+				
+		}
+
+		@Override
+		public List groupUsers(HttpServletRequest request, String user_mail,
+				String groupName) {
+			List usersContactsGroup=new ArrayList();
+			try{
+				usersContactsGroup.clear();			
+				usersContactsGroup = dashboardDao.usp_select_UsersOfGroupByName(user_mail,groupName);
+				return (ArrayList) usersContactsGroup;
+			}catch(Exception e){
+				logger.error("All Contacts of Group:"+e.toString());
+				return null;
+			}
+				
+		}
+		
+		@Override
+		public String usp_update_fileviewedproperty(HttpServletRequest request,
+				HttpServletResponse response, String file_id, String user_mail) {
+		
+			try{
+						
+				String usersContactsGroup = dashboardDao.usp_update_fileviewedproperty(file_id,user_mail);
+				logger.debug("Fileid:--"+file_id);
+				return file_id;
+			}catch(Exception e){
+				
+				return null;
+			}
+				
+		}
+		
+		
 }	

@@ -102,8 +102,7 @@ public class EditGroupDaoImpl implements EditGroupDao {
 		Connection	con = DataSourceUtils.getConnection(dataSource);
 		String strResult = "";
 		try {
-			cs = con.prepareCall("{call usp_update_UserGroup('" + groupid + "','" + username + "','" + selected_item + "','"+i+"')}");
-			logger.debug("The Statement is : "+cs);
+			cs = con.prepareCall("{call usp_update_UserGroup('" + groupid + "','" + username + "','" + selected_item + "','"+i+"')}");			
 			cs.execute(); 	  	
 	 	  	rs = cs.getResultSet();
 	 	  	while (rs.next()) {	 	  						

@@ -32,4 +32,8 @@ public interface DashboardDao {
 	public List getExpiredDateTime(String user_mail,String fileID);
 	public ArrayList<HashMap<String, Object>> usp_select_all_users(
 			String user_mail);
+	public String usp_Select_UserPrfoile(String email) throws SQLException;
+	public List usp_Select_Groups(String user_mail);
+	public List usp_select_UsersOfGroupByName(String user_mail, String groupName);
+	public String usp_update_fileviewedproperty(String file_id, String user_mail);
 }

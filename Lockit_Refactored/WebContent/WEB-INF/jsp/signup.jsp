@@ -42,8 +42,9 @@ function validate()
 	
 	if(x=="" && y=="" && pass=="" && con_pass=="" )
 		{
+		// document.getElementById("error-holder").innerHTML!="";
 		
-		document.getElementById("error").innerHTML="All fields  are  mandatory.";
+		document.getElementById("error-holder").innerHTML="All fields  are  mandatory.";
 	    return false;
 		
 		}
@@ -51,8 +52,9 @@ function validate()
      if (y==null || y=="")
 		
 	    {
+    	// document.getElementById("error-holder").innerHTML!="";
 		// alert("First name must be filled out"); 
-		document.getElementById("error").innerHTML="Email id is mandatory.";
+		document.getElementById("error-holder").innerHTML="Email Id is mandatory.";
 	    return false; 
 		
 	     }
@@ -60,22 +62,25 @@ function validate()
      if (atpos<1 || dotpos<atpos+2 || dotpos+2>=y.length)
     	 
         {
+    	// document.getElementById("error-holder").innerHTML!="";
      //alert("Not a valid e-mail address");
-     document.getElementById("error").innerHTML="Invalid email id.";
+     document.getElementById("error-holder").innerHTML="Invalid Email ID.";
     return false;
          }
      
      if( pass==null || pass=="")
 			
 		{
-		document.getElementById("error").innerHTML=" password is mandatory.";
+    	 //document.getElementById("error-holder").innerHTML!="";
+		document.getElementById("error-holder").innerHTML="Password is mandatory.";
 		return false;
 		}
      
      if( con_pass==null || con_pass=="")
 			
 		{
-		document.getElementById("error").innerHTML="confirm password is mandatory.";
+    	// document.getElementById("error-holder").innerHTML!="";
+		document.getElementById("error-holder").innerHTML="Confirm Password is mandatory.";
 		return false;
 		}
 		
@@ -83,17 +88,19 @@ function validate()
 	if((pass!=con_pass || !pass)) 
 				
 		{
+		//document.getElementById("error-holder").innerHTML!="";
 			//alert("Password does not match!!! Please give correct password");
-			document.getElementById("error").innerHTML="Password do not match.";
+			document.getElementById("error-holder").innerHTML="Password do not match.";
 			return false;
 		}
 	
 	 if (pass.length < 6)
 		  
 		 {
+		// document.getElementById("error-holder").innerHTML!="";
 		 
 		      //alert("password length must be atleast 6 characters");
-		   document.getElementById("error").innerHTML="Password length must be atleast 6 characters.";
+		   document.getElementById("error-holder").innerHTML="Password length must be atleast 6 characters.";
 		   return false;
 		  
 		 }
@@ -102,8 +109,9 @@ function validate()
 	if (x==null || x=="")
 		
 		{
+		//document.getElementById("error-holder").innerHTML!="";
 			// alert("First name must be filled out"); 
-			document.getElementById("error").innerHTML="Display name is mandatory.";
+			document.getElementById("error-holder").innerHTML="Display name is mandatory.";
 		    return false;
 		    
 		}
@@ -148,9 +156,11 @@ function validate()
 					<span id ="error-holder" style="color:#ff0000;"><%=error%></span>
 
 					<%
-					}
+					}else{
 					%> 
-					<span id ="error" style="color:#ff0000;"></span>
+					<span id ="error-holder" style="color:#ff0000;"></span>
+					<%} %>
+					<!-- <span id ="error" style="color:#ff0000;"></span> -->
 								</div>
                             	<ul>
                             		<li>

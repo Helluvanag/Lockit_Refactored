@@ -31,8 +31,8 @@ public class UploadFileController {
 		String strIsExpiry = (String)request.getAttribute("strIsExpiry");
 		String strCntInc = (String)request.getAttribute("strCntInc");
 		DashboardForm dash = new DashboardForm();
-		dash.setFile_id(strFileId);
-		dash.setFile_name(strFolderName);
+		dash.setFolderId(strFileId);//dash.setFile_id(strFileId);
+		dash.setFolderName(strFolderName);//dash.setFile_name(strFolderName);
 		dash.setIs_expiry(strIsExpiry);
 		dash.setCntInc(strCntInc);	
 		dash.setF2path(f2path);
@@ -65,8 +65,8 @@ public class UploadFileController {
  		 String strCntInc = (String)request.getAttribute("strCntInc");
  		 String errMsg = (String)request.getAttribute("error_message");
  		 DashboardForm dash = new DashboardForm();
- 		 dash.setFile_id(strFileId);
- 		 dash.setFile_name(strFolderName);
+ 		 dash.setFolderId(strFileId);//dash.setFile_id(strFileId);
+ 		 dash.setFolderName(strFolderName);//dash.setFile_name(strFolderName);
  		 dash.setIs_expiry(strIsExpiry);
  		 dash.setCntInc(strCntInc);	
  		 dash.setF2path(f2path);
@@ -79,11 +79,9 @@ public class UploadFileController {
 			if(strFolderResult.equals("Success")){
 				redirectAttributes.addFlashAttribute("message", "Folder Created Successfully.");
 			}else if(strFolderResult.equals("Exists")){	
-				//redirectAttributes.addFlashAttribute("error_message", "Folder Creation Failed.");
-				redirectAttributes.addFlashAttribute("message1", "Folder Already Exists.");
+				redirectAttributes.addFlashAttribute("error_message", "Folder Already Exists.");
 			}else{
-				redirectAttributes.addFlashAttribute("message1", errMsg); 
-			//	redirectAttributes.addFlashAttribute("error_message", "Folder Creation Failed."); 
+				redirectAttributes.addFlashAttribute("error_message", errMsg); 			 
 			}		 		 
 		 		return new ModelAndView("redirect:dashboard.do");
 			}

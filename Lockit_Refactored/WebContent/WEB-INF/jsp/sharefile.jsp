@@ -10,7 +10,14 @@
 	String isfolder = (String)request.getAttribute("isfolder");
 	String fileShareid = (String)request.getAttribute("fileShareid");
 	String Photourl = (String)request.getAttribute("Photourl");	
-	String msg = (String)request.getAttribute("message") ;	%>
+	String msg = (String)request.getAttribute("message") ;
+	String strIntCnt = (String)request.getAttribute("strIntCnt") ;
+	String strIsExpiry = (String)request.getAttribute("strIsExpiry") ;
+	String strf2path = (String)request.getAttribute("strf2path") ;
+	String strFileId = (String)request.getAttribute("strFileId") ;
+	String strFolderName = (String)request.getAttribute("strFolderName") ;
+	String strFolderExpiry = (String)request.getAttribute("strFolderExpiry") ;
+%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -19,7 +26,7 @@
         <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
         
     	<link href="css/inner.css" rel="stylesheet" type="text/css" />
-    
+    	<link rel="shortcut icon" href="images/favicon1.ico">
 	    <!--Requirement jQuery-->
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<!--Load Script and Stylesheet -->
@@ -49,18 +56,80 @@
 			 });
    		</script>
 		<style type="text/css">
-			.modalBackground
-			{
-			background-color: #fff;
-			filter: alpha(opacity=80);
-			opacity: 0.8;
-			z-index: 10000;
+			   .modalBackground
+			   {
+			   background-color: #fff;
+			   filter: alpha(opacity=80);
+			   opacity: 0.8;
+			   z-index: 10000;
+			   }
+			   .RadioClass
+			   {
+			   width:600px;
+			   }
+			   .ac_results {
+			 padding: 0px;
+			 border: 1px solid #84a10b;
+			 background-color: #E6AFAF;
+			 overflow: hidden;
 			}
-			.RadioClass
-			{
-			width:600px;
+			
+			.ac_results ul {
+			 width: 100%;
+			 list-style-position: inherit;
+			 list-style: inside;
+			 padding: 0;
+			 margin: 0;
 			}
-		</style>
+			
+			.ac_results li {
+			 margin: 0px;
+			 padding: 1px 1px;
+			 cursor: default;
+			 display: block;
+			 color: #fff;
+			 font-family:verdana;
+			 
+			 if width will be 100% horizontal scrollbar will apear 
+			 when scroll mode will be used
+			 
+			 width: 100%;
+			 font-size: 12px;
+			 
+			 it is very important, if line-height not setted or setted 
+			 in relative units scroll will be broken in firefox
+			 
+			 line-height: 16px;
+			 overflow: hidden;
+			
+			}
+			
+			.ac_loading {
+			 background: white url('../images/indicator.gif') right center no-repeat;
+			}
+			
+			.ac_odd {
+			 background-color: #14B9D6;
+			 color: #ffffff;
+			}
+			
+			.ac_over {
+			 background-color: gray;
+			 color: #ffffff;
+			}
+			
+			
+			.input_text{
+			 font-family:Arial, Helvetica, sans-serif;
+			 font-size:12px;
+			 border:1px solid #0000;
+			 padding:1px;
+			 width:200px;
+			 color:blue;
+			 background:white url(../images/search.png) no-repeat 3px 2px;
+			 padding-left:17px;
+			} 
+  </style>
 		<script type="text/javascript">
 		function updatesharedFile(fileid,emailid,download,sharing,print,expiredate){
 		var vardownload=document.getElementById(download).checked;
@@ -98,12 +167,7 @@
   		document.form1.txt_email.focus();
   		return false;
   		}
-  	   	else if (!filter.test(document.form1.txt_email.value)){ 
-  	  		document.getElementById("Lbl_MSGS").innerHTML = "Invalid Email Format.";
-			document.form1.txt_email.focus();
-			return false;
-		}
-		else{
+  	   	else{
 			document.getElementById("file_options").value=message;
 			document.getElementById("file_txt_email").value=document.form1.txt_email.value;
 			document.getElementById("file_txt_edays").value=document.form1.TxT_Days.value;
@@ -113,12 +177,34 @@
 			document.form2.file_txt_isfolder.value=document.form1.isfolder.value;
 			document.form2.file_txt_createdby.value=document.form1.FileOwnerEmaiId.value;
 			document.form2.file_txt_name.value='<%=filename%>';
-	       var f=document.form2;
-         f.method="post";
-      	 f.action='sharefile_folder.do';
-      	 f.submit();
+			document.form2.cntInc.value =  "<%=strIntCnt%>";
+			document.form2.f2path.value = "<%=strf2path%>";
+		   	document.form2.is_expiry.value = "<%=strIsExpiry%>";
+		   	document.form2.folderId.value = "<%=strFileId%>";
+		   	document.form2.folderName.value = "<%=strFolderName%>";
+		   	document.form2.folderExpiry.value = "<%=strFolderExpiry%>";
+	        var f=document.form2;
+            f.method="post";
+      	    f.action='sharefile_folder.do';
+      	    f.submit();
      	}
      	
+	}
+	function cancelPage(){		
+		document.form2.cntInc.value =  "<%=strIntCnt%>";
+		document.form2.f2path.value = "<%=strf2path%>";
+	   	document.form2.is_expiry.value = "<%=strIsExpiry%>";
+	   	document.form2.folderId.value = "<%=strFileId%>";
+	   	document.form2.folderName.value = "";//Set foldername to empty otherwise it is printed twice in the folder hierarchy
+	   	document.form2.folderExpiry.value = "<%=strFolderExpiry%>";
+        var f=document.form2;
+        f.method="post";
+        if("<%=strf2path%>".length != 0){        
+  	    	f.action='openFolder.do';
+        }else{        
+        	f.action='dashboard.do';	
+        }
+  	    f.submit();
 	}
 	</script>
 	<script type="text/javascript">
@@ -359,7 +445,7 @@ $("#myform :input").tooltip({
 				</div>
 				<div class="Filename-OwnerName fl shr-padding"><b>Owner Email :</b> <span id="lblFileOwnerEmail"  style="color:blue;"> <%= FileOwnerEmaiId %></span> </div>
                 
-                <div class="lockit-data-tables wd fl"><!--lockit-data-tables -->
+               <div class="lockit-data-tables wd fl"  style="overflow-y:scroll;height:150px;background-color: #D1DADE;"><!--lockit-data-tables -->
                 	<span id="Lbl_MSGS" style="color:red;"></span>
                     <table class="table th-font-color" id="gvSharedUsersSettings">
 					<thead> 
@@ -413,56 +499,45 @@ $("#myform :input").tooltip({
 			
 			%>
 				<td colspan=""><%=userId %> </td>
-				<td colspan="" ><%=ShareProperties.get(i).get("UserID") %>   </td>
-				
+				<td colspan="" ><%=ShareProperties.get(i).get("UserID") %>   </td>				
 				<td colspan=""> 
 				<%
-				if(Download.equals("1")){
-					
-					chk_download=chk_download+i; %> 
-					
-			   <input id=<%= "chk_download_" +i %> type="checkbox" name="box"  checked="checked" />
-			   
-			   <%  }else if(Download.equals("0")){ chk_download=chk_download+i;  %>
-			   
-			   <input id=<%= "chk_download_" +i %> type="checkbox"   value="0"/> 
-							    
+				if(Download.equals("1")){					
+					chk_download=chk_download+i; %> 					
+			   <input id=<%= "chk_download_" +i %> type="checkbox" name="box"  checked="checked" />			   
+			   <%  }else if(Download.equals("0")){ chk_download=chk_download+i;  %>			   
+			   <input id=<%= "chk_download_" +i %> type="checkbox"   value="0"/> 							    
 				<%} %>
 				 </td>
-				 
-				 
-				
-				<td colspan=""> <%if(Sharing.equals("1")){ 
-					
-					chk_sharing=chk_sharing+i;
-					
+				<td colspan=""> <%if(Sharing.equals("1")){ 					
+					chk_sharing=chk_sharing+i;					
 					%>  <input id=<%= "chk_sharing_" +i %> type="checkbox" name="box"   checked="checked" value="share"/>  <% }else if(Sharing.equals("0")){ chk_sharing=chk_sharing+i; %> <input id=<%= "chk_sharing_" +i %> type="checkbox"  value="0"/>    <%   } %> </td>
-				
 				<td colspan=""> <%if(Print.equals("1")){ 				
 					chk_print=chk_print+i;
+					%> 
+					    <input id=<%= "chk_print_"+i %> type="checkbox" name="box"   checked="checked" value="print"/>  <% }else if(Print.equals("0")){ chk_print=chk_print+i; %>  <input id=<%= "chk_print_" +i %> type="checkbox"   value="0"/>   <%   } %> </td>
 				
-					
-					%>  <input id=<%= "chk_print_"+i %> type="checkbox" name="box"   checked="checked" value="print"/>  <% }else if(Print.equals("0")){ chk_print=chk_print+i; %>  <input id=<%= "chk_print_" +i %> type="checkbox"   value="0"/>   <%   } %> </td>
-				
-				<td colspan="">  <% modifyexpireDate=modifyexpireDate+i; %><input   id=<%= "expireDate_" +i %> name="ExpiryDatetime"  type="text" value="<%=ShareProperties.get(i).get("ExpiredDatetime") %>"  style="width:118px"/> <img src="images/cal.gif" onclick="javascript:NewCssCal ('<%= "expireDate_" +i %>','yyyyMMdd','arrow',true,'24',true)"  style="cursor:pointer"/></td>
-				
-				<td colspan=""><a href="#"><img  src="images/edit.png" style="border-width:0px;" onclick ="updatesharedFile('<%=fileid%>','<%=email%>','<%=chk_download%>','<%=chk_sharing%>','<%=chk_print%>','<%= modifyexpireDate%>')"/> </a></td> 
-			</tr>
-			
+			<%-- 	<td colspan="">  <% modifyexpireDate=modifyexpireDate+i; %><input   id=<%= "expireDate_" +i %> name="ExpiryDatetime"  type="text" value="<%=ShareProperties.get(i).get("ExpiredDatetime") %>"  style="width:118px"/> <img src="images/cal.gif" onclick="javascript:NewCssCal ('<%= "expireDate_" +i %>','yyyyMMdd','arrow',true,'24',true)"  style="cursor:pointer"/></td> --%>
+				<td colspan="">
+    		<% 
+    				if(ShareProperties.get(i).get("ExpiredDatetime").equals("1969-01-01 00:00:00.0")){     
+     				 modifyexpireDate=modifyexpireDate+i;
+     		 %>
+    				 <input   id=<%= "expireDate_" +i %> name="ExpiryDatetime"  type="text" value=""  style="width:118px"/><img src="images/cal.gif" onclick="javascript:NewCssCal ('<%= "expireDate_" +i %>','yyyyMMdd','arrow',true,'24',true)"  style="cursor:pointer"/>
+     
+     		<%}else {  modifyexpireDate=modifyexpireDate+i; %>
+     				 <input   id=<%= "expireDate_" +i %> name="ExpiryDatetime"  type="text" value="<%=ShareProperties.get(i).get("ExpiredDatetime") %>"  style="width:118px"/> <img src="images/cal.gif" onclick="javascript:NewCssCal ('<%= "expireDate_" +i %>','yyyyMMdd','arrow',true,'24',true)"  style="cursor:pointer"/>  <%} %></td>
+				<td colspan=""><a href="#"><img  src="images/edit.png" style="border-width:0px;" onclick ="updatesharedFile('<%=fileid%>','<%=email%>','<%=chk_download%>','<%=chk_sharing%>','<%=chk_print%>','<%= modifyexpireDate%>')"/> </a></td>  
+			</tr>		
 		
-		  <%  }
-		}else{			
-			%>
-			<B>No Data Found.</B>	
-			
+		 	 <%  }
+				}else{			
+			 %>
+				<B>No Data Found.</B>			
 			<%
-			
-		}
-		}catch(Exception e){
-			
-		}
-		
-		  %>
+				}
+				}catch(Exception e){}
+		 	 %>
 		</table>
                 </div><!--lockit-data-tables ENDS -->
                 <div class="cl"></div>
@@ -470,7 +545,7 @@ $("#myform :input").tooltip({
                     <div class="Invite-People-headng fl">Invite People</div>
                     <div class="recp-email_id fl">
                     
-                        Recipient Email ID: <input name="txt_email" type="text" id="txt_email" />
+                        Recipient Email ID/Group Name: <input name="txt_email" type="text" id="txt_email" placeholder=""/>
                     </div>
                     <!--  validation control -->
                     <div class="Filename-OwnerName fl shr-padding">
@@ -514,7 +589,7 @@ $("#myform :input").tooltip({
                     </div>
                     <div class="document_Expiry fl">
                     <input type="button" name="btnShare" value="Share" id="btnShare"  onclick="shareFile_Folder()" class="btn login-btn" />
-      				<a href="dashboard.do"><input type="button" name="btnShareCancel" value="Cancel" id="btnShareCancel" class="btn login-btn" /></a>
+      				<!-- <a href="dashboard.do"> --><input type="button" name="btnShareCancel" onclick="cancelPage()" value="Cancel" id="btnShareCancel" class="btn login-btn" /></a>
                     </div>
                     
                 
@@ -560,6 +635,12 @@ $("#myform :input").tooltip({
    <input type="hidden" name="sharedemailid" id="sharedemailid" value=""> 
    <input type="hidden" name="sharedfileid" id="sharedfileid" value=""> 
    <input type="hidden" name="file_txt_name" id="file_txt_name" value=""> 
+   <input type="hidden" name="cntInc" id="cntInc" value="">
+   <input type="hidden" name="is_expiry" id="is_expiry" value="">
+   <input type="hidden" name="f2path" id="f2path" value="">
+   <input type="hidden" name="folderId" id="folderId" value="">
+   <input type="hidden" name="folderName" id="folderName" value="">
+   <input type="hidden" name="folderExpiry" id="folderExpiry" value="">
 </form>
 </body>
 </html>

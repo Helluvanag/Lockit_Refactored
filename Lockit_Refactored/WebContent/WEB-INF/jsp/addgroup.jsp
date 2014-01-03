@@ -25,7 +25,7 @@
             
         <!--  new css -->
         <link href="css/inner.css" rel="stylesheet" type="text/css" />
-        
+        <link rel="shortcut icon" href="images/favicon1.ico">
         <!-- elusive webicons -->
             <link rel="stylesheet" href="css/elusive/css/elusive-webfont.css" />
             
@@ -77,7 +77,23 @@
 		 
 
 	</style>
-
+<script type="text/javascript" src="js/pagination.js"></script>	
+<script type="text/javascript" src="js/jquery.min.js"></script>	
+<script type="text/javascript" src="js/jquery.pages.js"></script>	
+	 <style type="text/css">   
+            .pg-normal {
+                color: black;
+                font-weight: normal;
+                text-decoration: none;   
+                cursor: pointer;   
+            }
+            .pg-selected {
+                color: black;
+                font-weight: bold;       
+                text-decoration: underline;
+                cursor: pointer;
+            }
+        </style>
 <script type="text/javascript">
 
 function addgroup(){
@@ -212,10 +228,10 @@ function addgroup(){
 		 		<p  style="text-align:left;"><span id="L_Message">Select users to be included in a group</span></p>
 		 	</div>
 		 	<div class="lockit-data-tables wd fl" style="height:320px; overflow-y:scroll;">
-		 		<table class="table th-font-color">
+		 		<table class="table th-font-color" id="datatable1">
 				<thead>
 					<tr class="th-font-weight">
-						<th class="img-align-left" scope="col"><input id="selectall" type="checkbox"/></th>
+						<th  class="tooltip-hover" class="img-align-left" scope="col"><div class="tooltip">Select all users from all pages.</div><input id="selectall" type="checkbox"/></th>
 					   	<th class="img-align-left" scope="col"><a href="javascript:__doPostBack(&#39;gv_editgroup&#39;,&#39;Sort$displayname&#39;)">Name</a></th>
 					   	<th class="img-align-left" scope="col"><a href="javascript:__doPostBack(&#39;gv_editgroup&#39;,&#39;Sort$UserID&#39;)">Email ID</a></th>
 					</tr>
@@ -280,6 +296,13 @@ function addgroup(){
 					</tr>		 --%>
 			
 			</table>
+			<div id="pageNavPosition"></div>
+			<script type="text/javascript">			
+ 			var pager = new Pager('datatable1', 10);
+	        pager.init();
+	        pager.showPageNav('pager', 'pageNavPosition');
+	        pager.showPage(1);
+        </script>
 		 	</div>
 		 	<div class="lockit-data-tables wd fl">
 		 		<input type="button" name="btnCreateNewGroup" value="Add" id="btnCreateNewGroup" class="btn btn-primary" onclick="addgroup();"/>

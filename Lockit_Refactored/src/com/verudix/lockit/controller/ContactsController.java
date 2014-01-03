@@ -105,7 +105,7 @@ public class ContactsController {
 			 {	 
 				 String error_message = (String)request.getAttribute("error_message");
 				 redirectAttributes.addFlashAttribute("error_message", error_message);
-				 redirectAttributes.addFlashAttribute("message1", "Cannot add the contact.");
+			//	 redirectAttributes.addFlashAttribute("message1", "Cannot add the contact.");
 				 return new ModelAndView("redirect:contacts.do");
 			 }
 			
@@ -194,11 +194,15 @@ public class ContactsController {
 			String message="";
 				 String contactid = request.getParameter("selectedcontact_ids");				 
 				 String[] contactids = contactid.split(",");				 
-				 logger.debug("contactids..."+contactids);				 
+				 logger.debug("contactids length is..."+contactids.length);	
+				 if(contactids.length >1)
+					 message = "Contacts  deleted successfully.";
+				 else 
+					 message = "Contact  deleted successfully.";
 				 boolean bool = contactsService.deleteContacts(request, contactids, user_mail);								 
 				 if(bool)
 				 {
-					 redirectAttributes.addFlashAttribute("message", "Contact(s)  deleted successfully.");	
+					 redirectAttributes.addFlashAttribute("message", message);	
 					 return new ModelAndView("redirect:contacts.do"); 
 				 }
 					

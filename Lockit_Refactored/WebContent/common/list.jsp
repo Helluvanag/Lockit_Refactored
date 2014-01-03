@@ -4,10 +4,8 @@
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.List"%>
 
-
-
 <script type="text/javascript" src="js/jquery-1.4.3.min.js"></script>
-	<script src="js/jquery.autocomplete.js"></script>  
+<script src="js/jquery.autocomplete.js"></script>  
 		
  <% 
 	try{      
@@ -15,12 +13,15 @@
 
 	 DashboardServiceImpl dashboardServiceImpl=(DashboardServiceImpl)config.getServletContext().getAttribute("dashboardServiceImpl");
             
-		  List li=dashboardServiceImpl.getAllUserContacts((String)session.getAttribute("user_mail"));
+		
+		 List lig=dashboardServiceImpl.usp_Select_Groups((String)session.getAttribute("user_mail"));
+		 List li=dashboardServiceImpl.getAllUserContacts((String)session.getAttribute("user_mail"));
 		  
+		  li.addAll(lig);
+		  System.out.println("Group Users:"+lig);
 			
 			String[] str = new String[li.size()];			
 			Iterator it = li.iterator();
-			
 			int i = 0;
 			while(it.hasNext())
 			{
@@ -47,9 +48,7 @@
 				}
 			//jQuery related end	
 		
-			
- 		
-		    } 
+	    } 
 		catch(Exception e){ 
  			e.printStackTrace(); 
  		}

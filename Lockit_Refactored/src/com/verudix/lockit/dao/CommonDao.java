@@ -13,5 +13,6 @@ public interface CommonDao {
 	public String uspforgotpwd(HttpServletRequest request, String email,String fpkey) throws SQLException;
 	public String uspresetpwd(String email, String password) throws SQLException;
 	public String uspcheckPwdKey(String email, String fpkey) throws SQLException;
+	public String usp_Select_UserPrfoile(String email) throws SQLException;
 	
 }
